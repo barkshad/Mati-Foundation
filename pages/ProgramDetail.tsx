@@ -18,12 +18,23 @@ export const ProgramDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 pt-20">
       {/* Hero Header */}
-      <div className="relative h-[50vh] min-h-[400px]">
-        <img 
-          src={program.image} 
-          alt={program.title} 
-          className="w-full h-full object-cover"
-        />
+      <div className="relative h-[50vh] min-h-[400px] bg-slate-900 overflow-hidden">
+        {program.mediaType === 'video' ? (
+             <video 
+                src={program.image} 
+                className="w-full h-full object-cover opacity-80"
+                autoPlay
+                muted
+                loop
+                playsInline
+             />
+        ) : (
+            <img 
+              src={program.image} 
+              alt={program.title} 
+              className="w-full h-full object-cover"
+            />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-full p-8 md:p-12">
            <div className="max-w-7xl mx-auto">

@@ -4,7 +4,7 @@ import { useContent } from '../contexts/ContentContext';
 import { Navigate } from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
-  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Menu, X, Check, ChevronLeft
+  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Menu, X, Check, ChevronLeft, Play
 } from 'lucide-react';
 import { ImageUploader } from '../components/ImageUploader';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -12,6 +12,17 @@ import { Program, ChildProfile, Story, MediaItem } from '../types';
 
 // Simple UUID generator for new items
 const generateId = () => Math.random().toString(36).substr(2, 9);
+
+// Helper to get thumbnail from video url if possible (Cloudinary specific trick or fallback)
+const getPreviewUrl = (url: string, type?: 'image' | 'video') => {
+    if (type !== 'video') return url;
+    // Basic check for cloudinary to generate jpg thumbnail
+    if (url.includes('cloudinary.com')) {
+        // Replace extension with .jpg for thumbnail preview
+        return url.replace(/\.[^/.]+$/, ".jpg");
+    }
+    return url; 
+}
 
 export const Admin: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -353,7 +364,7 @@ export const Admin: React.FC = () => {
                   // List View
                   <div className="grid gap-4">
                     <button 
-                      onClick={() => setEditingProgram({ title: '', description: '', stats: '', image: 'https://picsum.photos/400/300' })}
+                      onClick={() => setEditingProgram({ title: '', description: '', stats: '', image: 'https://picsum.photos/400/300', mediaType: 'image' })}
                       className="w-full py-6 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all flex items-center justify-center gap-2 active:bg-slate-100"
                     >
                       <Plus size={24} /> Add New Program
@@ -361,7 +372,18 @@ export const Admin: React.FC = () => {
                     
                     {content.programs.map(program => (
                       <div key={program.id} className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4 items-center">
-                        <img src={program.image} alt={program.title} className="w-full md:w-32 h-40 md:h-32 object-cover rounded-xl" />
+                        <div className="w-full md:w-32 h-40 md:h-32 rounded-xl overflow-hidden relative bg-slate-100 flex-shrink-0">
+                            {program.mediaType === 'video' ? (
+                                <>
+                                    <video src={program.image} className="w-full h-full object-cover" muted />
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                        <Film className="text-white" size={24} />
+                                    </div>
+                                </>
+                            ) : (
+                                <img src={program.image} alt={program.title} className="w-full h-full object-cover" />
+                            )}
+                        </div>
                         <div className="flex-1 text-left w-full">
                           <h3 className="font-bold text-lg text-slate-800">{program.title}</h3>
                           <p className="text-slate-500 line-clamp-2 mt-1 text-sm md:text-base">{program.description}</p>
@@ -416,12 +438,24 @@ export const Admin: React.FC = () => {
                           />
                         </div>
                         <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                          <p className="text-xs font-bold text-slate-500 uppercase mb-3">Cover Image</p>
+                          <p className="text-xs font-bold text-slate-500 uppercase mb-3">Cover Media (Image or Video)</p>
                           <ImageUploader 
-                            accept="image/*"
-                            onUploadComplete={data => setEditingProgram({...editingProgram, image: data.url})} 
+                            accept="image/*,video/*"
+                            onUploadComplete={data => setEditingProgram({
+                                ...editingProgram, 
+                                image: data.url,
+                                mediaType: data.type
+                            })} 
                           />
-                          {editingProgram.image && <img src={editingProgram.image} className="h-40 w-full object-cover rounded-lg mt-3" />}
+                          {editingProgram.image && (
+                              <div className="mt-3 rounded-lg overflow-hidden border border-slate-200">
+                                  {editingProgram.mediaType === 'video' ? (
+                                      <video src={editingProgram.image} className="w-full h-48 object-cover" controls />
+                                  ) : (
+                                      <img src={editingProgram.image} className="h-48 w-full object-cover" />
+                                  )}
+                              </div>
+                          )}
                         </div>
                         <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t border-slate-100 mt-6">
                           <button onClick={() => setEditingProgram(null)} className="px-6 py-4 md:py-3 text-slate-600 font-bold hover:bg-slate-100 rounded-xl w-full md:w-auto">Cancel</button>
@@ -524,12 +558,23 @@ export const Admin: React.FC = () => {
                <div className="space-y-6">
                  {!editingStory ? (
                     <div className="space-y-4">
-                       <button onClick={() => setEditingStory({ title: '', category: 'Success Story', excerpt: '', content: '', image: 'https://picsum.photos/800/400' })} className="w-full py-4 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 flex justify-center items-center gap-2 shadow-md active:scale-95 transition-transform">
+                       <button onClick={() => setEditingStory({ title: '', category: 'Success Story', excerpt: '', content: '', image: 'https://picsum.photos/800/400', mediaType: 'image' })} className="w-full py-4 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 flex justify-center items-center gap-2 shadow-md active:scale-95 transition-transform">
                           <Plus size={24} /> Write New Story
                        </button>
                        {content.stories.map(story => (
                           <div key={story.id} className="bg-white p-4 md:p-6 rounded-2xl border border-slate-100 flex flex-col md:flex-row gap-4 items-start">
-                             <img src={story.image} className="w-full md:w-32 h-40 md:h-24 object-cover rounded-lg" />
+                             <div className="w-full md:w-32 h-40 md:h-24 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 relative">
+                                {story.mediaType === 'video' ? (
+                                    <>
+                                        <video src={story.image} className="w-full h-full object-cover" muted />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                            <Film size={20} className="text-white"/>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <img src={story.image} className="w-full h-full object-cover" />
+                                )}
+                             </div>
                              <div className="flex-1 w-full">
                                 <div className="flex justify-between items-start">
                                    <span className="text-xs font-bold text-teal-600 uppercase tracking-wider">{story.category}</span>
@@ -579,13 +624,25 @@ export const Admin: React.FC = () => {
                              <textarea className="w-full p-3 border rounded-xl h-64 font-mono text-sm leading-relaxed" placeholder="Write full story..." value={editingStory.content} onChange={e => setEditingStory({...editingStory, content: e.target.value})} />
                           </div>
                           <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Cover Image</p>
+                             <p className="text-xs font-bold text-slate-500 uppercase mb-2">Cover Media (Image or Video)</p>
                             <ImageUploader 
                               label="" 
-                              accept="image/*"
-                              onUploadComplete={data => setEditingStory({...editingStory, image: data.url})} 
+                              accept="image/*,video/*"
+                              onUploadComplete={data => setEditingStory({
+                                  ...editingStory, 
+                                  image: data.url,
+                                  mediaType: data.type
+                              })} 
                             />
-                            {editingStory.image && <img src={editingStory.image} className="h-32 w-full md:w-auto rounded-lg mt-3 object-cover" />}
+                            {editingStory.image && (
+                                <div className="mt-3 rounded-lg overflow-hidden border border-slate-200">
+                                    {editingStory.mediaType === 'video' ? (
+                                        <video src={editingStory.image} className="w-full h-48 object-cover" controls />
+                                    ) : (
+                                        <img src={editingStory.image} className="h-48 w-full md:w-auto object-cover" />
+                                    )}
+                                </div>
+                            )}
                           </div>
                           <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t mt-6">
                              <button onClick={() => setEditingStory(null)} className="px-6 py-4 md:py-3 text-slate-600 font-bold hover:bg-slate-100 rounded-xl w-full md:w-auto">Cancel</button>

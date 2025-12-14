@@ -2,7 +2,8 @@ export interface Program {
   id: string;
   title: string;
   description: string;
-  image: string;
+  image: string; // Can be image URL or video URL
+  mediaType?: 'image' | 'video';
   stats: string;
 }
 
@@ -13,7 +14,8 @@ export interface Story {
   date: string;
   excerpt: string;
   content: string;
-  image: string;
+  image: string; // Can be image URL or video URL
+  mediaType?: 'image' | 'video';
   category: 'Education' | 'Community' | 'Success Story';
 }
 

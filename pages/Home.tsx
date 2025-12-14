@@ -198,22 +198,30 @@ export const Home: React.FC = () => {
           >
             {content.programs.slice(0, 4).map((program) => (
               <motion.div key={program.id} {...({ variants: itemVariants } as any)} className="h-full">
-                <GlassCard className="h-full flex flex-col bg-slate-50/50" hoverEffect={true}>
-                  <div className="h-56 overflow-hidden relative">
-                    <img src={program.image} alt={program.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
-                  </div>
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="font-serif text-xl font-bold text-slate-800 mb-2">{program.title}</h3>
-                    <p className="text-slate-600 text-sm mb-4 flex-grow leading-relaxed">{program.description}</p>
-                    <div className="pt-4 border-t border-slate-200/60 mt-auto">
-                      <span className="text-teal-700 font-bold text-sm flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-                        {program.stats}
-                      </span>
+                <Link to={`/programs/${program.id}`} className="block h-full">
+                  <GlassCard className="h-full flex flex-col bg-slate-50/50 group" hoverEffect={true}>
+                    <div className="h-56 overflow-hidden relative">
+                      <img 
+                        src={program.image} 
+                        alt={program.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
                     </div>
-                  </div>
-                </GlassCard>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="font-serif text-xl font-bold text-slate-800 mb-2">{program.title}</h3>
+                      <p className="text-slate-600 text-sm mb-4 flex-grow leading-relaxed line-clamp-3">
+                        {program.description}
+                      </p>
+                      <div className="pt-4 border-t border-slate-200/60 mt-auto">
+                        <span className="text-teal-700 font-bold text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                          <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+                          Learn More <ArrowRight size={14} />
+                        </span>
+                      </div>
+                    </div>
+                  </GlassCard>
+                </Link>
               </motion.div>
             ))}
           </motion.div>

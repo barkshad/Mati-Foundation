@@ -19,12 +19,19 @@ export const Sponsorship: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {content.children.map((child) => (
-            <div key={child.id} onClick={() => setSelectedChild(child)} className="cursor-pointer">
+          {content.children.map((child, i) => (
+            <motion.div 
+              key={child.id} 
+              onClick={() => setSelectedChild(child)} 
+              className="cursor-pointer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1, type: "spring" }}
+            >
               <GlassCard hoverEffect={true} className="h-full">
-                <div className="relative h-64">
-                  <img src={child.image} alt={child.name} className="w-full h-full object-cover" />
-                  <div className="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded-full text-teal-700 font-bold text-xs shadow-sm">
+                <div className="relative h-64 overflow-hidden">
+                  <img src={child.image} alt={child.name} className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-teal-700 font-bold text-xs shadow-sm">
                     Age: {child.age}
                   </div>
                 </div>
@@ -32,12 +39,12 @@ export const Sponsorship: React.FC = () => {
                   <h3 className="font-serif text-2xl font-bold text-slate-900">{child.name}</h3>
                   <p className="text-teal-600 font-medium mb-4">Aspiring {child.dream}</p>
                   <p className="text-slate-500 text-sm line-clamp-2">{child.bio}</p>
-                  <button className="mt-4 w-full py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700 transition-colors">
+                  <button className="mt-4 w-full py-2 bg-teal-600 text-white rounded-lg font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/20">
                     View Profile
                   </button>
                 </div>
               </GlassCard>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -49,19 +56,20 @@ export const Sponsorship: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
             onClick={() => setSelectedChild(null)}
           >
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative"
+              initial={{ scale: 0.9, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 50 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-white/50"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
                 onClick={() => setSelectedChild(null)}
-                className="absolute top-4 right-4 p-2 bg-white/50 hover:bg-white rounded-full transition-colors z-10"
+                className="absolute top-4 right-4 p-2 bg-white/50 hover:bg-white rounded-full transition-colors z-10 backdrop-blur-sm"
               >
                 <X size={24} />
               </button>
@@ -72,24 +80,29 @@ export const Sponsorship: React.FC = () => {
                 </div>
                 <div className="md:w-1/2 p-8 flex flex-col justify-center">
                   <h2 className="font-serif text-4xl font-bold text-slate-900 mb-2">{selectedChild.name}</h2>
-                  <div className="flex gap-2 mb-6">
-                    <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-bold">Age {selectedChild.age}</span>
-                    <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-bold">Dreams of being a {selectedChild.dream}</span>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-bold border border-teal-100">Age {selectedChild.age}</span>
+                    <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-bold border border-purple-100">Future {selectedChild.dream}</span>
                   </div>
                   
                   <h4 className="font-bold text-slate-700 mb-2">My Story</h4>
-                  <p className="text-slate-600 mb-8">{selectedChild.bio}</p>
+                  <p className="text-slate-600 mb-8 leading-relaxed">{selectedChild.bio}</p>
 
                   <h4 className="font-bold text-slate-700 mb-2">What Sponsorship Covers</h4>
-                  <ul className="text-sm text-slate-500 space-y-1 mb-8">
-                    <li className="flex gap-2"><CheckCircle size={16} className="text-teal-500"/> School Fees & Uniforms</li>
-                    <li className="flex gap-2"><CheckCircle size={16} className="text-teal-500"/> Daily Nutritious Meals</li>
-                    <li className="flex gap-2"><CheckCircle size={16} className="text-teal-500"/> Medical Care</li>
+                  <ul className="text-sm text-slate-500 space-y-2 mb-8">
+                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> School Fees & Uniforms</li>
+                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Daily Nutritious Meals</li>
+                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Medical Care</li>
                   </ul>
 
-                  <a href="/get-involved" className="w-full py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-colors">
+                  <motion.a 
+                    href="/get-involved" 
+                    className="w-full py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     Sponsor {selectedChild.name} Today
-                  </a>
+                  </motion.a>
                 </div>
               </div>
             </motion.div>

@@ -10,10 +10,24 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", hoverEffect = false }) => {
   return (
     <motion.div 
-      className={`bg-white/80 backdrop-blur-md border border-white/40 shadow-xl shadow-teal-900/5 rounded-2xl overflow-hidden transition-all duration-300 ${className}`}
-      whileHover={hoverEffect ? { y: -8, boxShadow: "0 20px 25px -5px rgba(13, 148, 136, 0.1), 0 8px 10px -6px rgba(13, 148, 136, 0.1)" } : {}}
+      className={`relative bg-white/70 backdrop-blur-xl border border-white/50 shadow-lg shadow-teal-900/5 rounded-3xl overflow-hidden ${className}`}
+      initial={false}
+      whileHover={hoverEffect ? { 
+        y: -8, 
+        scale: 1.02,
+        backgroundColor: "rgba(255, 255, 255, 0.85)",
+        borderColor: "rgba(255, 255, 255, 0.9)",
+        boxShadow: "0 25px 50px -12px rgba(13, 148, 136, 0.15), 0 0 0 1px rgba(255,255,255,0.5) inset"
+      } : {}}
+      transition={{ type: "spring", stiffness: 400, damping: 25, mass: 1 }}
     >
-      {children}
+      {/* Glossy gradient overlay for realism */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-60 pointer-events-none z-0" />
+      
+      {/* Content wrapper */}
+      <div className="relative z-10 h-full">
+        {children}
+      </div>
     </motion.div>
   );
 };

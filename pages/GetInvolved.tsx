@@ -70,12 +70,15 @@ export const GetInvolved: React.FC = () => {
 
                   {/* M-Pesa & Instructions */}
                   <div className="space-y-6">
-                    <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-                      <h3 className="text-sm font-bold text-green-700 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 relative overflow-hidden opacity-80">
+                      <div className="absolute top-0 right-0 bg-slate-200 text-slate-500 text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wide">
+                          Coming Soon
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
                         <Smartphone size={18} /> M-Pesa Donation
                       </h3>
-                      <p className="font-mono text-green-900 font-bold text-lg mb-2">{content.contact.mpesa}</p>
-                      <p className="text-xs text-green-700">Go to M-Pesa &gt; Lipa na M-Pesa &gt; Paybill</p>
+                      <p className="font-mono text-slate-400 font-bold text-lg mb-2">Integration in Progress</p>
+                      <p className="text-xs text-slate-400">We are currently finalizing our M-Pesa Paybill details.</p>
                     </div>
                     
                     <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">

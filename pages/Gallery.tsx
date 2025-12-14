@@ -106,7 +106,7 @@ export const Gallery: React.FC = () => {
             onClick={() => setSelectedItem(null)}
           >
             <motion.button 
-              className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm z-50"
+              className="absolute top-4 right-4 md:top-6 md:right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm z-50"
               onClick={() => setSelectedItem(null)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -115,7 +115,7 @@ export const Gallery: React.FC = () => {
             </motion.button>
             
             <div 
-              className="relative max-w-5xl w-full max-h-[90vh] flex items-center justify-center"
+              className="relative max-w-5xl w-full max-h-[80vh] md:max-h-[90vh] flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
               {selectedItem.type === 'video' ? (
@@ -124,7 +124,7 @@ export const Gallery: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   src={selectedItem.url}
-                  className="max-w-full max-h-[85vh] rounded-xl shadow-2xl bg-black"
+                  className="max-w-full max-h-[80vh] md:max-h-[85vh] rounded-xl shadow-2xl bg-black"
                   controls
                   autoPlay
                 />
@@ -136,7 +136,7 @@ export const Gallery: React.FC = () => {
                   transition={{ type: "spring", damping: 25, stiffness: 300 }}
                   src={selectedItem.url}
                   alt={selectedItem.category}
-                  className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+                  className="max-w-full max-h-[80vh] md:max-h-[90vh] object-contain rounded-xl shadow-2xl"
                 />
               )}
               

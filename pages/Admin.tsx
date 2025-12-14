@@ -4,7 +4,7 @@ import { useContent } from '../contexts/ContentContext';
 import { Navigate } from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
-  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Filter
+  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Menu, X
 } from 'lucide-react';
 import { ImageUploader } from '../components/ImageUploader';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -19,6 +19,7 @@ export const Admin: React.FC = () => {
   
   // Navigation State
   const [activeTab, setActiveTab] = useState<'overview' | 'homepage' | 'programs' | 'sponsorship' | 'stories' | 'gallery' | 'settings'>('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Edit States
   const [editingProgram, setEditingProgram] = useState<Partial<Program> | null>(null);
@@ -142,11 +143,30 @@ export const Admin: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-100 font-sans overflow-hidden">
+      
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20">
-        <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-           <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center font-bold font-serif">M</div>
-           <span className="font-bold tracking-wide">Mati CMS</span>
+      <aside className={`
+        fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl 
+        transform transition-transform duration-300 ease-in-out
+        md:relative md:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+           <div className="flex items-center gap-3">
+             <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center font-bold font-serif">M</div>
+             <span className="font-bold tracking-wide">Mati CMS</span>
+           </div>
+           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400">
+             <X size={20} />
+           </button>
         </div>
         
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -161,7 +181,10 @@ export const Admin: React.FC = () => {
           ].map((item) => (
             <button 
               key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
+              onClick={() => {
+                setActiveTab(item.id as any);
+                setIsSidebarOpen(false);
+              }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium ${
                 activeTab === item.id 
                   ? 'bg-teal-600 text-white shadow-lg' 
@@ -181,377 +204,393 @@ export const Admin: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8 relative">
+      <main className="flex-1 overflow-y-auto w-full relative">
         
-        {/* Top Bar */}
-        <header className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-serif font-bold text-slate-800 capitalize">{activeTab}</h1>
-            <p className="text-slate-500 text-sm mt-1">Manage your website content safely.</p>
-          </div>
-          <a href="/" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
-            <ExternalLink size={16} /> View Live Site
-          </a>
-        </header>
+        {/* Mobile Header Bar */}
+        <div className="md:hidden bg-white p-4 flex items-center justify-between border-b border-slate-200 sticky top-0 z-10">
+          <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-slate-700">
+            <Menu size={24} />
+          </button>
+          <span className="font-bold text-slate-800 capitalize">{activeTab}</span>
+          <div className="w-8"></div> {/* Spacer for alignment */}
+        </div>
 
-        <div className="max-w-6xl mx-auto pb-20">
-          
-          {/* OVERVIEW TAB */}
-          {activeTab === 'overview' && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Total Children</h3>
-                  <div className="text-4xl font-bold text-teal-600">{content.children.length}</div>
-                </div>
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Programs Active</h3>
-                  <div className="text-4xl font-bold text-purple-600">{content.programs.length}</div>
-                </div>
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Stories Published</h3>
-                  <div className="text-4xl font-bold text-orange-600">{content.stories.length}</div>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-96">
-                <h3 className="font-bold text-slate-800 mb-6">Donation Trends (Year to Date)</h3>
-                <ResponsiveContainer width="100%" height="80%">
-                  <BarChart data={donationData}>
-                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
-                    <Bar dataKey="amount" fill="#0d9488" radius={[4, 4, 4, 4]} barSize={40} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+        <div className="p-4 md:p-8">
+          {/* Desktop Header */}
+          <header className="hidden md:flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-serif font-bold text-slate-800 capitalize">{activeTab}</h1>
+              <p className="text-slate-500 text-sm mt-1">Manage your website content safely.</p>
             </div>
-          )}
+            <a href="/" target="_blank" className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
+              <ExternalLink size={16} /> View Live Site
+            </a>
+          </header>
 
-          {/* HOMEPAGE TAB */}
-          {activeTab === 'homepage' && (
-            <div className="space-y-6 max-w-3xl">
-              <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                   <Type className="text-teal-600" /> Hero Section
-                </h2>
-                
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Main Headline</label>
-                    <input 
-                      type="text" 
-                      value={heroData.headline} 
-                      onChange={(e) => setHeroData({...heroData, headline: e.target.value})}
-                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none text-lg"
-                      placeholder="e.g. Empowering Future Generations"
-                    />
+          <div className="max-w-6xl mx-auto pb-20">
+            
+            {/* OVERVIEW TAB */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Total Children</h3>
+                    <div className="text-4xl font-bold text-teal-600">{content.children.length}</div>
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Sub-headline</label>
-                    <textarea 
-                      value={heroData.subheadline} 
-                      onChange={(e) => setHeroData({...heroData, subheadline: e.target.value})}
-                      className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none h-32 text-base leading-relaxed"
-                      placeholder="e.g. Providing shelter, education..."
-                    />
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Programs Active</h3>
+                    <div className="text-4xl font-bold text-purple-600">{content.programs.length}</div>
                   </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Stories Published</h3>
+                    <div className="text-4xl font-bold text-orange-600">{content.stories.length}</div>
+                  </div>
+                </div>
 
-                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                    <label className="block text-sm font-bold text-slate-700 mb-4">Background Image (or Video Poster)</label>
-                    <div className="flex gap-6 items-start">
-                       {heroData.heroImage && (
-                          <img src={heroData.heroImage} alt="Current Hero" className="w-32 h-20 object-cover rounded-lg shadow-sm" />
-                       )}
-                       <div className="flex-1">
-                          <ImageUploader 
-                            label=""
-                            accept="image/*"
-                            onUploadComplete={(data) => setHeroData({...heroData, heroImage: data.url})} 
-                          />
-                          <p className="text-xs text-slate-400 mt-2">Recommended: 1920x1080px (JPG)</p>
-                       </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-100 flex justify-end">
-                    <button 
-                      onClick={handleSaveHero}
-                      className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl active:scale-95"
-                    >
-                      <Save size={18} /> Save Changes
-                    </button>
-                  </div>
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80 md:h-96">
+                  <h3 className="font-bold text-slate-800 mb-6">Donation Trends (Year to Date)</h3>
+                  <ResponsiveContainer width="100%" height="80%">
+                    <BarChart data={donationData}>
+                      <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                      <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+                      <Bar dataKey="amount" fill="#0d9488" radius={[4, 4, 4, 4]} barSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* PROGRAMS TAB */}
-          {activeTab === 'programs' && (
-            <div className="space-y-6">
-              {!editingProgram ? (
-                // List View
-                <div className="grid gap-4">
-                  <button 
-                    onClick={() => setEditingProgram({ title: '', description: '', stats: '', image: 'https://picsum.photos/400/300' })}
-                    className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Plus size={20} /> Add New Program
-                  </button>
+            {/* HOMEPAGE TAB */}
+            {activeTab === 'homepage' && (
+              <div className="space-y-6 max-w-3xl">
+                <div className="bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                     <Type className="text-teal-600" /> Hero Section
+                  </h2>
                   
-                  {content.programs.map(program => (
-                    <div key={program.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
-                      <img src={program.image} alt={program.title} className="w-full md:w-32 h-32 object-cover rounded-xl" />
-                      <div className="flex-1 text-center md:text-left">
-                        <h3 className="font-bold text-xl text-slate-800">{program.title}</h3>
-                        <p className="text-slate-500 line-clamp-2 mt-1">{program.description}</p>
-                        <div className="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold mt-3">
-                          {program.stats}
-                        </div>
-                      </div>
-                      <div className="flex gap-3">
-                        <button onClick={() => setEditingProgram(program)} className="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors">
-                          <Edit2 size={18} />
-                        </button>
-                        <button onClick={() => handleDeleteProgram(program.id)} className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors">
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                // Edit View
-                <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-2xl mx-auto">
-                   <h2 className="text-2xl font-bold mb-6">{editingProgram.id ? 'Edit Program' : 'New Program'}</h2>
-                   <div className="space-y-4">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Main Headline</label>
                       <input 
-                        className="w-full p-3 border rounded-lg" 
-                        placeholder="Program Title"
-                        value={editingProgram.title}
-                        onChange={e => setEditingProgram({...editingProgram, title: e.target.value})}
+                        type="text" 
+                        value={heroData.headline} 
+                        onChange={(e) => setHeroData({...heroData, headline: e.target.value})}
+                        className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none text-lg"
+                        placeholder="e.g. Empowering Future Generations"
                       />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Sub-headline</label>
                       <textarea 
-                        className="w-full p-3 border rounded-lg h-32" 
-                        placeholder="Description"
-                        value={editingProgram.description}
-                        onChange={e => setEditingProgram({...editingProgram, description: e.target.value})}
+                        value={heroData.subheadline} 
+                        onChange={(e) => setHeroData({...heroData, subheadline: e.target.value})}
+                        className="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none h-32 text-base leading-relaxed"
+                        placeholder="e.g. Providing shelter, education..."
                       />
-                      <input 
-                        className="w-full p-3 border rounded-lg" 
-                        placeholder="Impact Stats (e.g. '150+ Kids')"
-                        value={editingProgram.stats}
-                        onChange={e => setEditingProgram({...editingProgram, stats: e.target.value})}
-                      />
-                      <div className="p-4 bg-slate-50 rounded-lg">
-                        <p className="text-sm font-bold mb-2">Cover Image</p>
-                        <ImageUploader 
-                          accept="image/*"
-                          onUploadComplete={data => setEditingProgram({...editingProgram, image: data.url})} 
-                        />
-                        {editingProgram.image && <img src={editingProgram.image} className="h-32 rounded mt-2" />}
-                      </div>
-                      <div className="flex justify-end gap-3 pt-4">
-                        <button onClick={() => setEditingProgram(null)} className="px-6 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancel</button>
-                        <button onClick={handleSaveProgram} className="px-6 py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700">Save Program</button>
-                      </div>
-                   </div>
-                </div>
-              )}
-            </div>
-          )}
+                    </div>
 
-          {/* SPONSORSHIP (CHILDREN) TAB */}
-          {activeTab === 'sponsorship' && (
-             <div className="space-y-6">
-               {!editingChild ? (
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <button 
-                      onClick={() => setEditingChild({ name: '', age: 5, dream: '', bio: '', image: 'https://picsum.photos/400/500', needsSponsorship: true })}
-                      className="min-h-[300px] border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all flex flex-col items-center justify-center gap-2"
-                    >
-                      <Plus size={32} />
-                      <span>Add Profile</span>
-                    </button>
-                    {content.children.map(child => (
-                      <div key={child.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 group relative">
-                         <img src={child.image} className="w-full h-48 object-cover" />
-                         <div className="p-4">
-                           <div className="flex justify-between items-start mb-2">
-                             <h3 className="font-bold text-lg">{child.name}, {child.age}</h3>
-                             {child.needsSponsorship && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">Needs Sponsor</span>}
-                           </div>
-                           <p className="text-slate-500 text-sm mb-4">Dreams of being a {child.dream}</p>
-                           <div className="flex gap-2">
-                             <button onClick={() => setEditingChild(child)} className="flex-1 py-2 bg-slate-100 rounded-lg text-slate-700 font-bold text-xs hover:bg-slate-200">Edit</button>
-                             <button onClick={() => handleDeleteChild(child.id)} className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"><Trash2 size={16}/></button>
-                           </div>
+                    <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                      <label className="block text-sm font-bold text-slate-700 mb-4">Background Image (or Video Poster)</label>
+                      <div className="flex flex-col md:flex-row gap-6 items-start">
+                         {heroData.heroImage && (
+                            <img src={heroData.heroImage} alt="Current Hero" className="w-full md:w-32 h-40 md:h-20 object-cover rounded-lg shadow-sm" />
+                         )}
+                         <div className="flex-1 w-full">
+                            <ImageUploader 
+                              label=""
+                              accept="image/*"
+                              onUploadComplete={(data) => setHeroData({...heroData, heroImage: data.url})} 
+                            />
+                            <p className="text-xs text-slate-400 mt-2">Recommended: 1920x1080px (JPG)</p>
                          </div>
                       </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-slate-100 flex justify-end">
+                      <button 
+                        onClick={handleSaveHero}
+                        className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                      >
+                        <Save size={18} /> Save Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PROGRAMS TAB */}
+            {activeTab === 'programs' && (
+              <div className="space-y-6">
+                {!editingProgram ? (
+                  // List View
+                  <div className="grid gap-4">
+                    <button 
+                      onClick={() => setEditingProgram({ title: '', description: '', stats: '', image: 'https://picsum.photos/400/300' })}
+                      className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all flex items-center justify-center gap-2"
+                    >
+                      <Plus size={20} /> Add New Program
+                    </button>
+                    
+                    {content.programs.map(program => (
+                      <div key={program.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 items-center">
+                        <img src={program.image} alt={program.title} className="w-full md:w-32 h-48 md:h-32 object-cover rounded-xl" />
+                        <div className="flex-1 text-center md:text-left w-full">
+                          <h3 className="font-bold text-xl text-slate-800">{program.title}</h3>
+                          <p className="text-slate-500 line-clamp-2 mt-1 text-sm md:text-base">{program.description}</p>
+                          <div className="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold mt-3">
+                            {program.stats}
+                          </div>
+                        </div>
+                        <div className="flex gap-3 w-full md:w-auto justify-center">
+                          <button onClick={() => setEditingProgram(program)} className="flex-1 md:flex-none p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors">
+                            <Edit2 size={18} className="mx-auto" />
+                          </button>
+                          <button onClick={() => handleDeleteProgram(program.id)} className="flex-1 md:flex-none p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors">
+                            <Trash2 size={18} className="mx-auto" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Edit View
+                  <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-100 max-w-2xl mx-auto">
+                     <h2 className="text-2xl font-bold mb-6">{editingProgram.id ? 'Edit Program' : 'New Program'}</h2>
+                     <div className="space-y-4">
+                        <input 
+                          className="w-full p-3 border rounded-lg" 
+                          placeholder="Program Title"
+                          value={editingProgram.title}
+                          onChange={e => setEditingProgram({...editingProgram, title: e.target.value})}
+                        />
+                        <textarea 
+                          className="w-full p-3 border rounded-lg h-32" 
+                          placeholder="Description"
+                          value={editingProgram.description}
+                          onChange={e => setEditingProgram({...editingProgram, description: e.target.value})}
+                        />
+                        <input 
+                          className="w-full p-3 border rounded-lg" 
+                          placeholder="Impact Stats (e.g. '150+ Kids')"
+                          value={editingProgram.stats}
+                          onChange={e => setEditingProgram({...editingProgram, stats: e.target.value})}
+                        />
+                        <div className="p-4 bg-slate-50 rounded-lg">
+                          <p className="text-sm font-bold mb-2">Cover Image</p>
+                          <ImageUploader 
+                            accept="image/*"
+                            onUploadComplete={data => setEditingProgram({...editingProgram, image: data.url})} 
+                          />
+                          {editingProgram.image && <img src={editingProgram.image} className="h-32 rounded mt-2 object-cover w-full md:w-auto" />}
+                        </div>
+                        <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4">
+                          <button onClick={() => setEditingProgram(null)} className="px-6 py-3 md:py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg w-full md:w-auto">Cancel</button>
+                          <button onClick={handleSaveProgram} className="px-6 py-3 md:py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 w-full md:w-auto">Save Program</button>
+                        </div>
+                     </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* SPONSORSHIP (CHILDREN) TAB */}
+            {activeTab === 'sponsorship' && (
+               <div className="space-y-6">
+                 {!editingChild ? (
+                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <button 
+                        onClick={() => setEditingChild({ name: '', age: 5, dream: '', bio: '', image: 'https://picsum.photos/400/500', needsSponsorship: true })}
+                        className="min-h-[300px] border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-bold hover:border-teal-500 hover:text-teal-600 hover:bg-teal-50 transition-all flex flex-col items-center justify-center gap-2 p-8"
+                      >
+                        <Plus size={32} />
+                        <span>Add Profile</span>
+                      </button>
+                      {content.children.map(child => (
+                        <div key={child.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 group relative">
+                           <img src={child.image} className="w-full h-64 md:h-48 object-cover" />
+                           <div className="p-4">
+                             <div className="flex justify-between items-start mb-2">
+                               <h3 className="font-bold text-lg">{child.name}, {child.age}</h3>
+                               {child.needsSponsorship && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">Needs Sponsor</span>}
+                             </div>
+                             <p className="text-slate-500 text-sm mb-4">Dreams of being a {child.dream}</p>
+                             <div className="flex gap-2">
+                               <button onClick={() => setEditingChild(child)} className="flex-1 py-2 bg-slate-100 rounded-lg text-slate-700 font-bold text-xs hover:bg-slate-200">Edit</button>
+                               <button onClick={() => handleDeleteChild(child.id)} className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"><Trash2 size={16}/></button>
+                             </div>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                 ) : (
+                    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-100 max-w-2xl mx-auto">
+                      <h2 className="text-2xl font-bold mb-6">Child Profile</h2>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                         <input className="p-3 border rounded-lg" placeholder="Name" value={editingChild.name} onChange={e => setEditingChild({...editingChild, name: e.target.value})} />
+                         <input className="p-3 border rounded-lg" type="number" placeholder="Age" value={editingChild.age} onChange={e => setEditingChild({...editingChild, age: parseInt(e.target.value)})} />
+                      </div>
+                      <div className="space-y-4">
+                         <input className="w-full p-3 border rounded-lg" placeholder="Dream (e.g. Doctor)" value={editingChild.dream} onChange={e => setEditingChild({...editingChild, dream: e.target.value})} />
+                         <textarea className="w-full p-3 border rounded-lg h-32" placeholder="Biography / Story" value={editingChild.bio} onChange={e => setEditingChild({...editingChild, bio: e.target.value})} />
+                         <div className="p-4 bg-slate-50 rounded-lg">
+                            <ImageUploader 
+                              label="Profile Photo" 
+                              accept="image/*"
+                              onUploadComplete={data => setEditingChild({...editingChild, image: data.url})} 
+                            />
+                            {editingChild.image && <img src={editingChild.image} className="h-24 w-24 object-cover rounded-full mt-2" />}
+                         </div>
+                         <label className="flex items-center gap-2 cursor-pointer select-none">
+                           <input type="checkbox" className="w-5 h-5 accent-teal-600" checked={editingChild.needsSponsorship} onChange={e => setEditingChild({...editingChild, needsSponsorship: e.target.checked})} />
+                           <span className="font-bold text-slate-700">Currently needs sponsorship</span>
+                         </label>
+  
+                         <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4 border-t">
+                            <button onClick={() => setEditingChild(null)} className="px-6 py-3 md:py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg w-full md:w-auto">Cancel</button>
+                            <button onClick={handleSaveChild} className="px-6 py-3 md:py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 w-full md:w-auto">Save Profile</button>
+                         </div>
+                      </div>
+                    </div>
+                 )}
+               </div>
+            )}
+
+            {/* STORIES TAB */}
+            {activeTab === 'stories' && (
+               <div className="space-y-6">
+                 {!editingStory ? (
+                    <div className="space-y-4">
+                       <button onClick={() => setEditingStory({ title: '', category: 'Success Story', excerpt: '', content: '', image: 'https://picsum.photos/800/400' })} className="w-full py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 flex justify-center items-center gap-2">
+                          <Plus size={20} /> Write New Story
+                       </button>
+                       {content.stories.map(story => (
+                          <div key={story.id} className="bg-white p-6 rounded-xl border border-slate-100 flex flex-col md:flex-row gap-4 items-start">
+                             <img src={story.image} className="w-full md:w-24 h-32 md:h-24 object-cover rounded-lg" />
+                             <div className="flex-1 w-full">
+                                <span className="text-xs font-bold text-teal-600 uppercase">{story.category}</span>
+                                <h3 className="font-bold text-lg text-slate-800">{story.title}</h3>
+                                <p className="text-sm text-slate-500 line-clamp-2">{story.excerpt}</p>
+                             </div>
+                             <div className="flex gap-2 w-full md:w-auto justify-end border-t md:border-t-0 pt-4 md:pt-0 mt-2 md:mt-0">
+                               <button onClick={() => setEditingStory(story)} className="p-2 text-slate-400 hover:text-teal-600"><Edit2 size={18} /></button>
+                               <button onClick={() => handleDeleteStory(story.id)} className="p-2 text-slate-400 hover:text-red-600"><Trash2 size={18} /></button>
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+                 ) : (
+                    <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-100">
+                       <h2 className="text-2xl font-bold mb-6">Edit Story</h2>
+                       <div className="space-y-4">
+                          <input className="w-full p-3 border rounded-lg font-bold text-lg" placeholder="Story Title" value={editingStory.title} onChange={e => setEditingStory({...editingStory, title: e.target.value})} />
+                          <div className="flex flex-col md:flex-row gap-4">
+                             <select className="p-3 border rounded-lg bg-white" value={editingStory.category} onChange={e => setEditingStory({...editingStory, category: e.target.value as any})}>
+                                <option>Success Story</option>
+                                <option>Education</option>
+                                <option>Community</option>
+                             </select>
+                             <input type="date" className="p-3 border rounded-lg" value={editingStory.date} onChange={e => setEditingStory({...editingStory, date: e.target.value})} />
+                          </div>
+                          <textarea className="w-full p-3 border rounded-lg h-24" placeholder="Short Excerpt (appears on cards)" value={editingStory.excerpt} onChange={e => setEditingStory({...editingStory, excerpt: e.target.value})} />
+                          <textarea className="w-full p-3 border rounded-lg h-64 font-mono text-sm" placeholder="Full Content..." value={editingStory.content} onChange={e => setEditingStory({...editingStory, content: e.target.value})} />
+                          <div className="p-4 bg-slate-50 rounded-lg">
+                            <ImageUploader 
+                              label="Cover Image" 
+                              accept="image/*"
+                              onUploadComplete={data => setEditingStory({...editingStory, image: data.url})} 
+                            />
+                            {editingStory.image && <img src={editingStory.image} className="h-32 rounded mt-2 object-cover" />}
+                          </div>
+                          <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-4">
+                             <button onClick={() => setEditingStory(null)} className="px-6 py-3 md:py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg w-full md:w-auto">Cancel</button>
+                             <button onClick={handleSaveStory} className="px-6 py-3 md:py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 w-full md:w-auto">Publish Story</button>
+                          </div>
+                       </div>
+                    </div>
+                 )}
+               </div>
+            )}
+
+            {/* GALLERY TAB */}
+            {activeTab === 'gallery' && (
+              <div className="space-y-6">
+                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Film size={20} className="text-teal-600"/> Add New Media</h2>
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
+                      <select 
+                        className="p-3 border rounded-lg bg-white min-w-full md:min-w-[200px]" 
+                        value={galleryCategory} 
+                        onChange={(e) => setGalleryCategory(e.target.value as any)}
+                      >
+                        <option value="General">General</option>
+                        <option value="Education">Education</option>
+                        <option value="Community">Community</option>
+                        <option value="Welfare">Welfare</option>
+                      </select>
+                      <div className="flex-1">
+                        <ImageUploader 
+                          onUploadComplete={handleGalleryUpload} 
+                          label="Upload Photo or Video"
+                          accept="image/*,video/*" 
+                        />
+                      </div>
+                    </div>
+                 </div>
+                 
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {content.gallery.map((item) => (
+                       <div key={item.id} className="relative group rounded-xl overflow-hidden aspect-square bg-slate-100">
+                          {item.type === 'video' ? (
+                            <div className="w-full h-full relative">
+                              <video src={item.url} className="w-full h-full object-cover" muted />
+                              <div className="absolute top-2 left-2 bg-black/50 text-white p-1 rounded-full"><Film size={12}/></div>
+                            </div>
+                          ) : (
+                            <img src={item.url} className="w-full h-full object-cover" loading="lazy" />
+                          )}
+                          
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                             <span className="text-white text-xs font-bold px-2 py-1 bg-teal-600 rounded-full mb-2">{item.category}</span>
+                             <button onClick={() => handleDeleteGalleryItem(item.id)} className="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 shadow-lg">
+                                <Trash2 size={20} />
+                             </button>
+                          </div>
+                       </div>
                     ))}
                  </div>
-               ) : (
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-2xl mx-auto">
-                    <h2 className="text-2xl font-bold mb-6">Child Profile</h2>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                       <input className="p-3 border rounded-lg" placeholder="Name" value={editingChild.name} onChange={e => setEditingChild({...editingChild, name: e.target.value})} />
-                       <input className="p-3 border rounded-lg" type="number" placeholder="Age" value={editingChild.age} onChange={e => setEditingChild({...editingChild, age: parseInt(e.target.value)})} />
-                    </div>
-                    <div className="space-y-4">
-                       <input className="w-full p-3 border rounded-lg" placeholder="Dream (e.g. Doctor)" value={editingChild.dream} onChange={e => setEditingChild({...editingChild, dream: e.target.value})} />
-                       <textarea className="w-full p-3 border rounded-lg h-32" placeholder="Biography / Story" value={editingChild.bio} onChange={e => setEditingChild({...editingChild, bio: e.target.value})} />
-                       <div className="p-4 bg-slate-50 rounded-lg">
-                          <ImageUploader 
-                            label="Profile Photo" 
-                            accept="image/*"
-                            onUploadComplete={data => setEditingChild({...editingChild, image: data.url})} 
-                          />
-                          {editingChild.image && <img src={editingChild.image} className="h-24 w-24 object-cover rounded-full mt-2" />}
-                       </div>
-                       <label className="flex items-center gap-2 cursor-pointer">
-                         <input type="checkbox" className="w-5 h-5 accent-teal-600" checked={editingChild.needsSponsorship} onChange={e => setEditingChild({...editingChild, needsSponsorship: e.target.checked})} />
-                         <span className="font-bold text-slate-700">Currently needs sponsorship</span>
-                       </label>
+              </div>
+            )}
 
-                       <div className="flex justify-end gap-3 pt-4 border-t">
-                          <button onClick={() => setEditingChild(null)} className="px-6 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancel</button>
-                          <button onClick={handleSaveChild} className="px-6 py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700">Save Profile</button>
-                       </div>
-                    </div>
-                  </div>
-               )}
-             </div>
-          )}
-
-          {/* STORIES TAB */}
-          {activeTab === 'stories' && (
-             <div className="space-y-6">
-               {!editingStory ? (
-                  <div className="space-y-4">
-                     <button onClick={() => setEditingStory({ title: '', category: 'Success Story', excerpt: '', content: '', image: 'https://picsum.photos/800/400' })} className="w-full py-3 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 flex justify-center items-center gap-2">
-                        <Plus size={20} /> Write New Story
-                     </button>
-                     {content.stories.map(story => (
-                        <div key={story.id} className="bg-white p-6 rounded-xl border border-slate-100 flex gap-4 items-start">
-                           <img src={story.image} className="w-24 h-24 object-cover rounded-lg" />
-                           <div className="flex-1">
-                              <span className="text-xs font-bold text-teal-600 uppercase">{story.category}</span>
-                              <h3 className="font-bold text-lg text-slate-800">{story.title}</h3>
-                              <p className="text-sm text-slate-500 line-clamp-2">{story.excerpt}</p>
-                           </div>
-                           <button onClick={() => setEditingStory(story)} className="p-2 text-slate-400 hover:text-teal-600"><Edit2 size={18} /></button>
-                           <button onClick={() => handleDeleteStory(story.id)} className="p-2 text-slate-400 hover:text-red-600"><Trash2 size={18} /></button>
-                        </div>
-                     ))}
-                  </div>
-               ) : (
-                  <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
-                     <h2 className="text-2xl font-bold mb-6">Edit Story</h2>
-                     <div className="space-y-4">
-                        <input className="w-full p-3 border rounded-lg font-bold text-lg" placeholder="Story Title" value={editingStory.title} onChange={e => setEditingStory({...editingStory, title: e.target.value})} />
-                        <div className="flex gap-4">
-                           <select className="p-3 border rounded-lg bg-white" value={editingStory.category} onChange={e => setEditingStory({...editingStory, category: e.target.value as any})}>
-                              <option>Success Story</option>
-                              <option>Education</option>
-                              <option>Community</option>
-                           </select>
-                           <input type="date" className="p-3 border rounded-lg" value={editingStory.date} onChange={e => setEditingStory({...editingStory, date: e.target.value})} />
-                        </div>
-                        <textarea className="w-full p-3 border rounded-lg h-24" placeholder="Short Excerpt (appears on cards)" value={editingStory.excerpt} onChange={e => setEditingStory({...editingStory, excerpt: e.target.value})} />
-                        <textarea className="w-full p-3 border rounded-lg h-64 font-mono text-sm" placeholder="Full Content..." value={editingStory.content} onChange={e => setEditingStory({...editingStory, content: e.target.value})} />
-                        <ImageUploader 
-                          label="Cover Image" 
-                          accept="image/*"
-                          onUploadComplete={data => setEditingStory({...editingStory, image: data.url})} 
-                        />
-                        <div className="flex justify-end gap-3 pt-4">
-                           <button onClick={() => setEditingStory(null)} className="px-6 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancel</button>
-                           <button onClick={handleSaveStory} className="px-6 py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700">Publish Story</button>
-                        </div>
+            {/* SETTINGS TAB */}
+            {activeTab === 'settings' && (
+               <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 max-w-2xl">
+                  <h2 className="text-xl font-bold mb-6">Contact & Payment Settings</h2>
+                  <div className="space-y-6">
+                     <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
+                        <input className="w-full p-3 border rounded-lg" defaultValue={content.contact.email} />
                      </div>
-                  </div>
-               )}
-             </div>
-          )}
-
-          {/* GALLERY TAB */}
-          {activeTab === 'gallery' && (
-            <div className="space-y-6">
-               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Film size={20} className="text-teal-600"/> Add New Media</h2>
-                  <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    <select 
-                      className="p-3 border rounded-lg bg-white min-w-[200px]" 
-                      value={galleryCategory} 
-                      onChange={(e) => setGalleryCategory(e.target.value as any)}
-                    >
-                      <option value="General">General</option>
-                      <option value="Education">Education</option>
-                      <option value="Community">Community</option>
-                      <option value="Welfare">Welfare</option>
-                    </select>
-                    <div className="flex-1">
-                      <ImageUploader 
-                        onUploadComplete={handleGalleryUpload} 
-                        label="Upload Photo or Video to Cloudinary"
-                        accept="image/*,video/*" 
-                      />
-                    </div>
+                     <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
+                        <input className="w-full p-3 border rounded-lg" defaultValue={content.contact.phone} />
+                     </div>
+                     <div className="pt-6 border-t">
+                        <label className="block text-sm font-bold text-slate-700 mb-2">Bank Details (Displayed publicly)</label>
+                        <textarea className="w-full p-3 border rounded-lg h-24 font-mono text-sm" defaultValue={content.contact.bankDetails} />
+                     </div>
+                     <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-2">M-Pesa Details</label>
+                        <input className="w-full p-3 border rounded-lg font-mono text-sm" defaultValue={content.contact.mpesa} />
+                     </div>
+                     <button className="w-full py-3 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800">Save Settings</button>
                   </div>
                </div>
-               
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {content.gallery.map((item) => (
-                     <div key={item.id} className="relative group rounded-xl overflow-hidden aspect-square bg-slate-100">
-                        {item.type === 'video' ? (
-                          <div className="w-full h-full relative">
-                            <video src={item.url} className="w-full h-full object-cover" muted />
-                            <div className="absolute top-2 left-2 bg-black/50 text-white p-1 rounded-full"><Film size={12}/></div>
-                          </div>
-                        ) : (
-                          <img src={item.url} className="w-full h-full object-cover" loading="lazy" />
-                        )}
-                        
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                           <span className="text-white text-xs font-bold px-2 py-1 bg-teal-600 rounded-full">{item.category}</span>
-                           <button onClick={() => handleDeleteGalleryItem(item.id)} className="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-transform hover:scale-110">
-                              <Trash2 size={20} />
-                           </button>
-                        </div>
-                     </div>
-                  ))}
-               </div>
-            </div>
-          )}
+            )}
 
-          {/* SETTINGS TAB */}
-          {activeTab === 'settings' && (
-             <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 max-w-2xl">
-                <h2 className="text-xl font-bold mb-6">Contact & Payment Settings</h2>
-                <div className="space-y-6">
-                   <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                      <input className="w-full p-3 border rounded-lg" defaultValue={content.contact.email} />
-                   </div>
-                   <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
-                      <input className="w-full p-3 border rounded-lg" defaultValue={content.contact.phone} />
-                   </div>
-                   <div className="pt-6 border-t">
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Bank Details (Displayed publicly)</label>
-                      <textarea className="w-full p-3 border rounded-lg h-24 font-mono text-sm" defaultValue={content.contact.bankDetails} />
-                   </div>
-                   <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2">M-Pesa Details</label>
-                      <input className="w-full p-3 border rounded-lg font-mono text-sm" defaultValue={content.contact.mpesa} />
-                   </div>
-                   <button className="w-full py-3 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800">Save Settings</button>
-                </div>
-             </div>
-          )}
-
+          </div>
         </div>
       </main>
     </div>

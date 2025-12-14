@@ -59,7 +59,7 @@ export const Sponsorship: React.FC = () => {
               initial: { opacity: 0 },
               animate: { opacity: 1 },
               exit: { opacity: 0 },
-              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto"
             } as any)}
             onClick={() => setSelectedChild(null)}
           >
@@ -69,41 +69,43 @@ export const Sponsorship: React.FC = () => {
                 animate: { scale: 1, opacity: 1, y: 0 },
                 exit: { scale: 0.95, opacity: 0, y: 50 },
                 transition: { type: "spring", damping: 25, stiffness: 300 },
-                className: "bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-white/50"
+                className: "bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-white/50 my-8 max-h-[90vh] flex flex-col"
               } as any)}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <button 
                 onClick={() => setSelectedChild(null)}
-                className="absolute top-4 right-4 p-2 bg-white/50 hover:bg-white rounded-full transition-colors z-10 backdrop-blur-sm"
+                className="absolute top-4 right-4 p-2 bg-white/50 hover:bg-white rounded-full transition-colors z-20 backdrop-blur-sm"
               >
                 <X size={24} />
               </button>
 
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-1/2 h-64 md:h-auto">
+              <div className="flex flex-col md:flex-row h-full overflow-y-auto">
+                <div className="md:w-1/2 h-64 md:h-auto flex-shrink-0">
                   <img src={selectedChild.image} alt={selectedChild.name} className="w-full h-full object-cover" />
                 </div>
-                <div className="md:w-1/2 p-8 flex flex-col justify-center">
-                  <h2 className="font-serif text-4xl font-bold text-slate-900 mb-2">{selectedChild.name}</h2>
+                <div className="md:w-1/2 p-6 md:p-8 flex flex-col">
+                  <h2 className="font-serif text-3xl md:text-4xl font-bold text-slate-900 mb-2">{selectedChild.name}</h2>
                   <div className="flex flex-wrap gap-2 mb-6">
                     <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm font-bold border border-teal-100">Age {selectedChild.age}</span>
                     <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm font-bold border border-purple-100">Future {selectedChild.dream}</span>
                   </div>
                   
-                  <h4 className="font-bold text-slate-700 mb-2">My Story</h4>
-                  <p className="text-slate-600 mb-8 leading-relaxed">{selectedChild.bio}</p>
+                  <div className="prose prose-sm prose-slate overflow-y-auto pr-2 custom-scrollbar flex-1 mb-6">
+                    <h4 className="font-bold text-slate-700 mb-2 mt-0">My Story</h4>
+                    <p className="text-slate-600 mb-4 leading-relaxed">{selectedChild.bio}</p>
 
-                  <h4 className="font-bold text-slate-700 mb-2">What Sponsorship Covers</h4>
-                  <ul className="text-sm text-slate-500 space-y-2 mb-8">
-                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> School Fees & Uniforms</li>
-                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Daily Nutritious Meals</li>
-                    <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Medical Care</li>
-                  </ul>
+                    <h4 className="font-bold text-slate-700 mb-2">What Sponsorship Covers</h4>
+                    <ul className="text-sm text-slate-500 space-y-2 list-none pl-0">
+                      <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> School Fees & Uniforms</li>
+                      <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Daily Nutritious Meals</li>
+                      <li className="flex gap-2 items-center"><CheckCircle size={16} className="text-teal-500 fill-teal-50"/> Medical Care</li>
+                    </ul>
+                  </div>
 
                   <motion.a 
                     href="/get-involved" 
-                    className="w-full py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30"
+                    className="w-full py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30 shrink-0"
                     {...({
                       whileHover: { scale: 1.02 },
                       whileTap: { scale: 0.98 }

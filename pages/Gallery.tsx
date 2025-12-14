@@ -21,10 +21,12 @@ export const Gallery: React.FC = () => {
           {content.gallery.map((imgUrl, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: index * 0.05, type: "spring", stiffness: 100, damping: 20 }}
-              whileHover={{ scale: 1.03, zIndex: 10 }}
+              {...({
+                initial: { opacity: 0, scale: 0.9, y: 20 },
+                whileInView: { opacity: 1, scale: 1, y: 0 },
+                transition: { delay: index * 0.05, type: "spring", stiffness: 100, damping: 20 },
+                whileHover: { scale: 1.03, zIndex: 10 }
+              } as any)}
               className="aspect-square rounded-2xl overflow-hidden shadow-md group relative cursor-pointer bg-slate-200 border-4 border-white"
               onClick={() => setSelectedImage(imgUrl)}
             >
@@ -46,29 +48,35 @@ export const Gallery: React.FC = () => {
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md"
+            {...({
+              initial: { opacity: 0 },
+              animate: { opacity: 1 },
+              exit: { opacity: 0 },
+              className: "fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md"
+            } as any)}
             onClick={() => setSelectedImage(null)}
           >
             <motion.button 
               className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-sm"
               onClick={() => setSelectedImage(null)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              {...({
+                whileHover: { scale: 1.1 },
+                whileTap: { scale: 0.9 }
+              } as any)}
             >
               <X size={24} />
             </motion.button>
             <motion.img
-              initial={{ opacity: 0, scale: 0.8, y: 100 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 100 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              {...({
+                initial: { opacity: 0, scale: 0.8, y: 100 },
+                animate: { opacity: 1, scale: 1, y: 0 },
+                exit: { opacity: 0, scale: 0.8, y: 100 },
+                transition: { type: "spring", damping: 25, stiffness: 300 }
+              } as any)}
               src={selectedImage}
               alt="Full screen view"
               className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             />
           </motion.div>
         )}

@@ -24,9 +24,11 @@ export const Sponsorship: React.FC = () => {
               key={child.id} 
               onClick={() => setSelectedChild(child)} 
               className="cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, type: "spring" }}
+              {...({
+                initial: { opacity: 0, y: 20 },
+                whileInView: { opacity: 1, y: 0 },
+                transition: { delay: i * 0.1, type: "spring" }
+              } as any)}
             >
               <GlassCard hoverEffect={true} className="h-full">
                 <div className="relative h-64 overflow-hidden">
@@ -53,19 +55,23 @@ export const Sponsorship: React.FC = () => {
       <AnimatePresence>
         {selectedChild && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+            {...({
+              initial: { opacity: 0 },
+              animate: { opacity: 1 },
+              exit: { opacity: 0 },
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+            } as any)}
             onClick={() => setSelectedChild(null)}
           >
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 50 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 50 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-white/50"
-              onClick={(e) => e.stopPropagation()}
+              {...({
+                initial: { scale: 0.9, opacity: 0, y: 50 },
+                animate: { scale: 1, opacity: 1, y: 0 },
+                exit: { scale: 0.95, opacity: 0, y: 50 },
+                transition: { type: "spring", damping: 25, stiffness: 300 },
+                className: "bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-white/50"
+              } as any)}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <button 
                 onClick={() => setSelectedChild(null)}
@@ -98,8 +104,10 @@ export const Sponsorship: React.FC = () => {
                   <motion.a 
                     href="/get-involved" 
                     className="w-full py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    {...({
+                      whileHover: { scale: 1.02 },
+                      whileTap: { scale: 0.98 }
+                    } as any)}
                   >
                     Sponsor {selectedChild.name} Today
                   </motion.a>

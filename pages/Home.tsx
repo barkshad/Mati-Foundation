@@ -37,9 +37,11 @@ export const Home: React.FC = () => {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <motion.img 
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 10, ease: "easeOut" }}
+            {...({
+              initial: { scale: 1.1 },
+              animate: { scale: 1 },
+              transition: { duration: 10, ease: "easeOut" }
+            } as any)}
             src={content.hero.heroImage} 
             alt="Mati Foundation Children" 
             className="w-full h-full object-cover"
@@ -52,26 +54,28 @@ export const Home: React.FC = () => {
         {/* Hero Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 text-center sm:px-6 lg:px-8 -mt-20">
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
+            {...({
+              initial: "hidden",
+              animate: "visible",
+              variants: containerVariants
+            } as any)}
           >
-            <motion.div variants={itemVariants}>
+            <motion.div {...({ variants: itemVariants } as any)}>
               <span className="inline-block py-1.5 px-4 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-50 text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-md shadow-lg">
                 Non-Profit Organization
               </span>
             </motion.div>
             
-            <motion.h1 variants={itemVariants} className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-sm">
+            <motion.h1 {...({ variants: itemVariants } as any)} className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-sm">
               {content.hero.headline}
             </motion.h1>
             
-            <motion.p variants={itemVariants} className="text-lg sm:text-2xl text-teal-50 max-w-3xl mx-auto mb-10 font-light leading-relaxed drop-shadow-sm">
+            <motion.p {...({ variants: itemVariants } as any)} className="text-lg sm:text-2xl text-teal-50 max-w-3xl mx-auto mb-10 font-light leading-relaxed drop-shadow-sm">
               {content.hero.subheadline}
             </motion.p>
             
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+            <motion.div {...({ variants: itemVariants } as any)} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/get-involved" 
                   className="px-8 py-4 bg-teal-500 text-white rounded-full font-bold text-lg shadow-lg shadow-teal-500/30 flex items-center justify-center gap-2"
@@ -79,7 +83,7 @@ export const Home: React.FC = () => {
                   <Heart fill="white" size={20} /> Donate Now
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 15 }}>
+              <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/sponsorship" 
                   className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/40 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
@@ -96,10 +100,12 @@ export const Home: React.FC = () => {
       <section className="relative -mt-32 z-20 px-4 mb-12">
         <motion.div 
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6"
-          initial={{ y: 100, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
+          {...({
+            initial: { y: 100, opacity: 0 },
+            whileInView: { y: 0, opacity: 1 },
+            viewport: { once: true, margin: "-100px" },
+            transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 }
+          } as any)}
         >
           <AnimatedCounter value={150} suffix="+" label="Children Educated" />
           <AnimatedCounter value={500} suffix="+" label="Meals Served Weekly" />
@@ -113,10 +119,12 @@ export const Home: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <motion.div 
               className="lg:w-1/2"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ type: "spring", stiffness: 70, damping: 20 }}
+              {...({
+                initial: { opacity: 0, x: -50 },
+                whileInView: { opacity: 1, x: 0 },
+                viewport: { once: true, margin: "-100px" },
+                transition: { type: "spring", stiffness: 70, damping: 20 }
+              } as any)}
             >
               <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-2">Our Story</h4>
               <h2 className="font-serif text-4xl sm:text-5xl font-bold text-teal-950 mb-6">A Legacy of Love</h2>
@@ -130,21 +138,25 @@ export const Home: React.FC = () => {
             </motion.div>
             <div className="lg:w-1/2 grid grid-cols-2 gap-4">
               <motion.img 
-                initial={{ opacity: 0, y: 50, rotate: -3 }}
-                whileInView={{ opacity: 1, y: 0, rotate: -3 }}
-                whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                {...({
+                  initial: { opacity: 0, y: 50, rotate: -3 },
+                  whileInView: { opacity: 1, y: 0, rotate: -3 },
+                  whileHover: { scale: 1.05, rotate: 0, zIndex: 10 },
+                  viewport: { once: true },
+                  transition: { type: "spring", stiffness: 100, damping: 20 }
+                } as any)}
                 src="https://picsum.photos/400/500?random=20" 
                 alt="Children playing" 
                 className="rounded-2xl shadow-xl mt-12 border-4 border-white" 
               />
               <motion.img 
-                initial={{ opacity: 0, y: 50, rotate: 3 }}
-                whileInView={{ opacity: 1, y: 0, rotate: 3 }}
-                whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
+                {...({
+                  initial: { opacity: 0, y: 50, rotate: 3 },
+                  whileInView: { opacity: 1, y: 0, rotate: 3 },
+                  whileHover: { scale: 1.05, rotate: 0, zIndex: 10 },
+                  viewport: { once: true },
+                  transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.1 }
+                } as any)}
                 src="https://picsum.photos/400/500?random=21" 
                 alt="Classroom" 
                 className="rounded-2xl shadow-xl border-4 border-white" 
@@ -166,13 +178,15 @@ export const Home: React.FC = () => {
 
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
+            {...({
+              variants: containerVariants,
+              initial: "hidden",
+              whileInView: "visible",
+              viewport: { once: true, margin: "-50px" }
+            } as any)}
           >
             {content.programs.slice(0, 4).map((program) => (
-              <motion.div key={program.id} variants={itemVariants} className="h-full">
+              <motion.div key={program.id} {...({ variants: itemVariants } as any)} className="h-full">
                 <GlassCard className="h-full flex flex-col bg-slate-50/50" hoverEffect={true}>
                   <div className="h-56 overflow-hidden relative">
                     <img src={program.image} alt={program.title} className="w-full h-full object-cover" />

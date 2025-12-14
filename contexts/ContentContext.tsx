@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { doc, onSnapshot, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { DEFAULT_CONTENT } from '../constants';
+import { DEFAULT_CONTENT, FIREBASE_CONFIG } from '../constants';
 import { SiteContent, ContentContextType, Program } from '../types';
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -16,43 +16,66 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [content, setContent] = useState<SiteContent>(DEFAULT_CONTENT);
   const [loading, setLoading] = useState(true);
 
+  // Check if we are using the placeholder API key.
+  // If so, we switch to LocalStorage mode to prevent Firebase connection errors.
+  const isDemoMode = !FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === "YOUR_API_KEY_HERE";
+
   useEffect(() => {
-    // Subscribe to Firestore updates
+    if (isDemoMode) {
+      console.log("⚠️ No valid Firebase configuration detected. Running in Offline/Demo Mode using LocalStorage.");
+      const localData = localStorage.getItem('mati_content');
+      if (localData) {
+        try {
+          setContent(JSON.parse(localData));
+        } catch (e) {
+          console.error("Error parsing local content", e);
+        }
+      }
+      setLoading(false);
+      return;
+    }
+
+    // Real Firebase connection
     const docRef = doc(db, 'website_content', 'main_v1');
     
-    // Note: If permission denied (common without valid keys), this will fail gracefully
-    // and we stick with DEFAULT_CONTENT
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         setContent(docSnap.data() as SiteContent);
       } else {
-        // If doc doesn't exist, we might want to create it (admin only usually)
-        // or just keep defaults
-        console.log("No content found in DB, using defaults");
+        console.log("Document does not exist in Firestore. Using defaults.");
       }
       setLoading(false);
     }, (error) => {
-      console.warn("Firestore connection failed (expected if no API keys), using offline content.", error);
+      console.warn("Firestore connection issue (falling back to offline mode):", error.message);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isDemoMode]);
 
   const updateContent = async (section: keyof SiteContent, data: any) => {
+    const newContent = { ...content, [section]: data };
+    
+    // Optimistic update for UI
+    setContent(newContent);
+
+    if (isDemoMode) {
+      localStorage.setItem('mati_content', JSON.stringify(newContent));
+      return;
+    }
+
     try {
         const docRef = doc(db, 'website_content', 'main_v1');
-        // Merging logic
-        const newContent = { ...content, [section]: data };
-        
-        // Optimistic update
-        setContent(newContent);
-        
-        // Write to DB
         await updateDoc(docRef, { [section]: data });
-    } catch (e) {
-        console.error("Failed to update content", e);
-        alert("Could not save to database. Check console/permissions.");
+    } catch (e: any) {
+        // If the document doesn't exist, updateDoc fails. We try setDoc with merge.
+        if (e.code === 'not-found') {
+           const docRef = doc(db, 'website_content', 'main_v1');
+           await setDoc(docRef, { [section]: data }, { merge: true });
+        } else {
+           console.error("Failed to update content in Firestore", e);
+           alert("Changes saved locally only (Database connection failed).");
+        }
     }
   };
 

@@ -42,8 +42,10 @@ export const Navbar: React.FC = () => {
           <Link to="/" className="flex items-center gap-3 group relative z-50">
              <motion.div 
                className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-teal-600/20"
-               whileHover={{ scale: 1.1, rotate: 3 }}
-               transition={{ type: "spring", stiffness: 400, damping: 15 }}
+               {...({
+                 whileHover: { scale: 1.1, rotate: 3 },
+                 transition: { type: "spring", stiffness: 400, damping: 15 }
+               } as any)}
              >
                M
              </motion.div>
@@ -65,17 +67,21 @@ export const Navbar: React.FC = () => {
                 {link.name}
                 {location.pathname === link.path && (
                   <motion.span 
-                    layoutId="underline"
-                    className="absolute -bottom-1 left-0 w-full h-0.5 bg-teal-500 rounded-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    {...({
+                      layoutId: "underline",
+                      className: "absolute -bottom-1 left-0 w-full h-0.5 bg-teal-500 rounded-full",
+                      transition: { type: "spring", stiffness: 300, damping: 20 }
+                    } as any)}
                   />
                 )}
               </Link>
             ))}
             <motion.div
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              {...({
+                whileHover: { scale: 1.05, y: -2 },
+                whileTap: { scale: 0.95 },
+                transition: { type: "spring", stiffness: 400, damping: 15 }
+              } as any)}
             >
               <Link
                 to="/get-involved"
@@ -101,19 +107,23 @@ export const Navbar: React.FC = () => {
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="md:hidden bg-white/90 backdrop-blur-xl border-t border-gray-100 overflow-hidden shadow-xl"
+            {...({
+              initial: { opacity: 0, height: 0 },
+              animate: { opacity: 1, height: 'auto' },
+              exit: { opacity: 0, height: 0 },
+              transition: { type: "spring", stiffness: 300, damping: 30 },
+              className: "md:hidden bg-white/90 backdrop-blur-xl border-t border-gray-100 overflow-hidden shadow-xl"
+            } as any)}
           >
             <div className="px-4 pt-4 pb-8 space-y-2">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.name}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.05 }}
+                  {...({
+                    initial: { x: -20, opacity: 0 },
+                    animate: { x: 0, opacity: 1 },
+                    transition: { delay: i * 0.05 }
+                  } as any)}
                 >
                   <Link
                     to={link.path}
@@ -130,9 +140,11 @@ export const Navbar: React.FC = () => {
               ))}
               <motion.div 
                 className="pt-4 mt-4 border-t border-slate-100"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                {...({
+                  initial: { y: 20, opacity: 0 },
+                  animate: { y: 0, opacity: 1 },
+                  transition: { delay: 0.3 }
+                } as any)}
               >
                 <Link
                   to="/get-involved"

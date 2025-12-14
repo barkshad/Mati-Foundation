@@ -19,17 +19,21 @@ export const About: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-12 mb-24">
           <motion.div 
             className="bg-teal-50 p-10 rounded-3xl border border-teal-100"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            {...({
+              initial: { opacity: 0, x: -20 },
+              animate: { opacity: 1, x: 0 }
+            } as any)}
           >
             <h2 className="font-serif text-3xl font-bold text-teal-800 mb-4">Our Mission</h2>
             <p className="text-lg text-slate-700 leading-relaxed">{content.about.mission}</p>
           </motion.div>
           <motion.div 
             className="bg-white p-10 rounded-3xl border border-slate-100 shadow-xl"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+            {...({
+              initial: { opacity: 0, x: 20 },
+              animate: { opacity: 1, x: 0 },
+              transition: { delay: 0.2 }
+            } as any)}
           >
             <h2 className="font-serif text-3xl font-bold text-teal-800 mb-4">Our Vision</h2>
             <p className="text-lg text-slate-700 leading-relaxed">{content.about.vision}</p>

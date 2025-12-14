@@ -43,12 +43,16 @@ export const Admin: React.FC = () => {
   // Form States (Local buffers before saving to context/firebase)
   const [heroData, setHeroData] = useState(content.hero);
   const [aboutData, setAboutData] = useState(content.about);
+  
+  // Settings Form State
+  const [contactData, setContactData] = useState(content.contact);
 
   // Sync state with content if it changes (e.g. initial load)
   useEffect(() => {
     if (content) {
       setHeroData(content.hero);
       setAboutData(content.about);
+      setContactData(content.contact);
     }
   }, [content]);
 
@@ -72,6 +76,11 @@ export const Admin: React.FC = () => {
     await updateContent('about', aboutData);
     alert('About preview images updated successfully!');
   };
+  
+  const handleSaveContact = async () => {
+    await updateContent('contact', contactData);
+    alert('Settings updated successfully!');
+  }
 
   const handleSaveProgram = async () => {
     if (!editingProgram) return;
@@ -773,22 +782,51 @@ export const Admin: React.FC = () => {
                   <div className="space-y-5">
                      <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-500 uppercase">Email</label>
-                        <input className="w-full p-4 border rounded-xl text-base" defaultValue={content.contact.email} />
+                        <input 
+                           className="w-full p-4 border rounded-xl text-base" 
+                           value={contactData.email} 
+                           onChange={(e) => setContactData({...contactData, email: e.target.value})}
+                        />
                      </div>
                      <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
-                        <input className="w-full p-4 border rounded-xl text-base" defaultValue={content.contact.phone} />
+                        <input 
+                           className="w-full p-4 border rounded-xl text-base" 
+                           value={contactData.phone}
+                           onChange={(e) => setContactData({...contactData, phone: e.target.value})}
+                        />
+                     </div>
+                     <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-500 uppercase">WhatsApp</label>
+                        <input 
+                           className="w-full p-4 border rounded-xl text-base" 
+                           value={contactData.whatsapp}
+                           onChange={(e) => setContactData({...contactData, whatsapp: e.target.value})}
+                        />
                      </div>
                      <div className="pt-6 border-t space-y-1">
                         <label className="text-xs font-bold text-slate-500 uppercase">Bank Details</label>
-                        <textarea className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" defaultValue={content.contact.bankDetails} />
+                        <textarea 
+                           className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" 
+                           value={contactData.bankDetails}
+                           onChange={(e) => setContactData({...contactData, bankDetails: e.target.value})}
+                        />
                      </div>
                      <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-500 uppercase">M-Pesa</label>
-                        <input className="w-full p-4 border rounded-xl font-mono text-sm" defaultValue={content.contact.mpesa} />
+                        <input 
+                           className="w-full p-4 border rounded-xl font-mono text-sm" 
+                           value={contactData.mpesa}
+                           onChange={(e) => setContactData({...contactData, mpesa: e.target.value})}
+                        />
                      </div>
                      <div className="pt-4">
-                        <button className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg">Save Settings</button>
+                        <button 
+                           onClick={handleSaveContact}
+                           className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
+                        >
+                           Save Settings
+                        </button>
                      </div>
                   </div>
                </div>

@@ -41,6 +41,7 @@ export interface ContactInfo {
   address: string;
   email: string;
   phone: string;
+  whatsapp: string;
   bankDetails: string;
   mpesa: string;
 }

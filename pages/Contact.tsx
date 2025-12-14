@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContent } from '../contexts/ContentContext';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
 
 export const Contact: React.FC = () => {
   const { content } = useContent();
@@ -46,6 +46,24 @@ export const Contact: React.FC = () => {
                 <div>
                   <h3 className="font-bold text-slate-900">Call Us</h3>
                   <p className="text-slate-600">{content.contact.phone}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-green-100 text-green-700 rounded-lg">
+                  <MessageCircle size={24} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900">WhatsApp</h3>
+                  <p className="text-slate-600 mb-1">{content.contact.whatsapp}</p>
+                  <a 
+                    href={`https://wa.me/${content.contact.whatsapp.replace(/[^0-9]/g, '')}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm font-bold text-green-600 hover:text-green-700"
+                  >
+                    Chat on WhatsApp &rarr;
+                  </a>
                 </div>
               </div>
 

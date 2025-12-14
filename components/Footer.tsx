@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock, ArrowRight, MessageCircle } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
 
 export const Footer: React.FC = () => {
@@ -49,6 +49,12 @@ export const Footer: React.FC = () => {
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-teal-600" />
                 <span>{content.contact.phone}</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <MessageCircle size={18} className="text-teal-600" />
+                <a href={`https://wa.me/${content.contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  {content.contact.whatsapp}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-teal-600" />

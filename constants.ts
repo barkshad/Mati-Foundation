@@ -1,12 +1,13 @@
 import { SiteContent } from './types';
 
 export const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "mati-foundation.firebaseapp.com",
-  projectId: "mati-foundation",
-  storageBucket: "mati-foundation.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
+  apiKey: "AIzaSyDF3FnrxPYa6Hj_0lIT59FP9CSCIk7aS0w",
+  authDomain: "mati-foundation-2d67e.firebaseapp.com",
+  projectId: "mati-foundation-2d67e",
+  storageBucket: "mati-foundation-2d67e.firebasestorage.app",
+  messagingSenderId: "769000463528",
+  appId: "1:769000463528:web:efbfbb32b885aa7071369d",
+  measurementId: "G-EHP18C5S41"
 };
 
 export const CLOUDINARY_CLOUD_NAME = "demo"; // Replace with real cloud name

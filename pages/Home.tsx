@@ -42,28 +42,28 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[95vh] min-h-[700px] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0 bg-slate-900">
           <motion.img 
             {...({
-              initial: { scale: 1.1 },
+              initial: { scale: 1.15 },
               animate: { scale: 1 },
-              transition: { duration: 10, ease: "easeOut" }
+              transition: { duration: 12, ease: "easeOut" }
             } as any)}
             src={content.hero.heroImage} 
             alt="Mati Foundation Children" 
             className="w-full h-full object-cover opacity-90"
           />
-          {/* Lighter gradient for better visibility of the image while keeping text readable */}
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-950/80 via-teal-900/40 to-black/20"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-teal-50 via-transparent to-transparent opacity-60"></div>
+          {/* Refined gradient for better visibility of image and text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/30 via-transparent to-slate-900/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/40 via-transparent to-slate-900/40"></div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center sm:px-6 lg:px-8 -mt-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center sm:px-6 lg:px-8 mt-12">
           <motion.div
             {...({
               initial: "hidden",
@@ -72,32 +72,39 @@ export const Home: React.FC = () => {
             } as any)}
           >
             <motion.div {...({ variants: itemVariants } as any)}>
-              <span className="inline-block py-1.5 px-4 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-50 text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-md shadow-lg">
+              <span className="inline-flex items-center gap-2 py-2 px-5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold tracking-[0.2em] uppercase mb-8 backdrop-blur-md shadow-2xl">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
                 Non-Profit Organization
               </span>
             </motion.div>
             
-            <motion.h1 {...({ variants: itemVariants } as any)} className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-sm">
+            <motion.h1 
+              {...({ variants: itemVariants } as any)} 
+              className="font-serif text-5xl sm:text-7xl md:text-8xl font-bold text-white mb-8 leading-[1.1] tracking-tight drop-shadow-xl text-balance"
+            >
               {content.hero.headline}
             </motion.h1>
             
-            <motion.p {...({ variants: itemVariants } as any)} className="text-lg sm:text-2xl text-teal-50 max-w-3xl mx-auto mb-10 font-light leading-relaxed drop-shadow-sm">
+            <motion.p 
+              {...({ variants: itemVariants } as any)} 
+              className="text-lg sm:text-2xl text-white/90 max-w-3xl mx-auto mb-12 font-light leading-relaxed drop-shadow-md text-balance"
+            >
               {content.hero.subheadline}
             </motion.p>
             
-            <motion.div {...({ variants: itemVariants } as any)} className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.div {...({ variants: itemVariants } as any)} className="flex flex-col sm:flex-row gap-5 justify-center">
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/get-involved" 
-                  className="px-8 py-4 bg-teal-500 text-white rounded-full font-bold text-lg shadow-lg shadow-teal-500/30 flex items-center justify-center gap-2"
+                  className="px-10 py-5 bg-teal-600 text-white rounded-full font-bold text-lg shadow-2xl shadow-teal-900/40 flex items-center justify-center gap-3 border border-teal-500/50 hover:bg-teal-500 transition-colors"
                 >
-                  <Heart fill="white" size={20} /> Donate Now
+                  <Heart fill="white" size={20} className="text-white" /> Donate Now
                 </Link>
               </motion.div>
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/sponsorship" 
-                  className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/40 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                  className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
                 >
                   Sponsor a Child
                 </Link>
@@ -105,10 +112,21 @@ export const Home: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
+        
+        {/* Scroll Indicator */}
+        <motion.div 
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+        >
+          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+        </motion.div>
       </section>
 
       {/* Stats Section - Floating Overlap */}
-      <section className="relative -mt-32 z-20 px-4 mb-12">
+      <section className="relative -mt-24 z-20 px-4 mb-20">
         <motion.div 
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6"
           {...({
@@ -125,9 +143,12 @@ export const Home: React.FC = () => {
       </section>
 
       {/* About Preview */}
-      <section className="py-24 bg-teal-50">
+      <section className="py-32 relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-teal-100/30 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
             <motion.div 
               className="lg:w-1/2"
               {...({
@@ -137,58 +158,73 @@ export const Home: React.FC = () => {
                 transition: { type: "spring", stiffness: 70, damping: 20 }
               } as any)}
             >
-              <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-2">Our Story</h4>
-              <h2 className="font-serif text-4xl sm:text-5xl font-bold text-teal-950 mb-6">A Legacy of Love</h2>
-              <p className="text-slate-600 text-lg leading-relaxed mb-8">
+              <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-3">
+                <span className="w-8 h-[1px] bg-teal-600"></span> Our Story
+              </h4>
+              <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">A Legacy of <br/><span className="text-teal-600 italic">Compassion</span></h2>
+              <p className="text-slate-600 text-xl leading-relaxed mb-10 font-light">
                 {content.about.founderStory.substring(0, 300)}...
               </p>
-              <Link to="/about" className="group text-teal-700 font-bold flex items-center gap-2 transition-all">
-                <span className="border-b-2 border-teal-200 group-hover:border-teal-600 transition-colors">Read our full story</span> 
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <Link to="/about" className="group text-slate-900 font-bold flex items-center gap-3 text-lg transition-all">
+                <span className="border-b-2 border-slate-200 group-hover:border-teal-600 transition-colors pb-1">Read our full story</span> 
+                <span className="p-2 bg-slate-100 rounded-full group-hover:bg-teal-600 group-hover:text-white transition-all">
+                    <ArrowRight size={16} />
+                </span>
               </Link>
             </motion.div>
-            <div className="lg:w-1/2 grid grid-cols-2 gap-4">
-              <motion.img 
+            
+            <div className="lg:w-1/2 grid grid-cols-2 gap-6 relative">
+              <motion.div 
+                className="col-span-1 mt-12"
                 {...({
-                  initial: { opacity: 0, y: 50, rotate: -3 },
-                  whileInView: { opacity: 1, y: 0, rotate: -3 },
-                  whileHover: { scale: 1.05, rotate: 0, zIndex: 10 },
+                  initial: { opacity: 0, y: 50 },
+                  whileInView: { opacity: 1, y: 0 },
+                  whileHover: { y: -10 },
                   viewport: { once: true },
                   transition: { type: "spring", stiffness: 100, damping: 20 }
                 } as any)}
-                src="https://picsum.photos/400/500?random=20" 
-                alt="Children playing" 
-                className="rounded-2xl shadow-xl mt-12 border-4 border-white" 
-              />
-              <motion.img 
+              >
+                 <img 
+                    src={content.about.homePreviewImage1 || "https://picsum.photos/400/500?random=20"} 
+                    alt="Children playing" 
+                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover" 
+                  />
+              </motion.div>
+
+              <motion.div 
+                 className="col-span-1"
                 {...({
-                  initial: { opacity: 0, y: 50, rotate: 3 },
-                  whileInView: { opacity: 1, y: 0, rotate: 3 },
-                  whileHover: { scale: 1.05, rotate: 0, zIndex: 10 },
+                  initial: { opacity: 0, y: 50 },
+                  whileInView: { opacity: 1, y: 0 },
+                  whileHover: { y: -10 },
                   viewport: { once: true },
                   transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.1 }
                 } as any)}
-                src="https://picsum.photos/400/500?random=21" 
-                alt="Classroom" 
-                className="rounded-2xl shadow-xl border-4 border-white" 
-              />
+              >
+                 <img 
+                    src={content.about.homePreviewImage2 || "https://picsum.photos/400/500?random=21"} 
+                    alt="Classroom" 
+                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover" 
+                  />
+              </motion.div>
+              
+              <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-orange-400 rounded-full blur-[40px] opacity-60 pointer-events-none"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Programs */}
-      <section className="py-24 bg-white relative">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-100 to-transparent"></div>
+      <section className="py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-2">What We Do</h4>
-            <h2 className="font-serif text-4xl font-bold text-slate-900 mb-4">Our Core Programs</h2>
-            <p className="text-slate-500 max-w-2xl mx-auto text-lg">Holistic interventions designed to break the cycle of poverty.</p>
+          <div className="text-center mb-20">
+            <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">What We Do</h4>
+            <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-6 tracking-tight">Our Core Programs</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-xl font-light">Holistic interventions designed to break the cycle of poverty.</p>
           </div>
 
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             {...({
               variants: containerVariants,
               initial: "hidden",
@@ -199,24 +235,26 @@ export const Home: React.FC = () => {
             {content.programs.slice(0, 4).map((program) => (
               <motion.div key={program.id} {...({ variants: itemVariants } as any)} className="h-full">
                 <Link to={`/programs/${program.id}`} className="block h-full">
-                  <GlassCard className="h-full flex flex-col bg-slate-50/50 group" hoverEffect={true}>
-                    <div className="h-56 overflow-hidden relative">
+                  <GlassCard className="h-full flex flex-col group" hoverEffect={true}>
+                    <div className="h-64 overflow-hidden relative">
                       <img 
                         src={program.image} 
                         alt={program.title} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-80"></div>
+                      <div className="absolute bottom-4 left-4 right-4">
+                         <h3 className="font-serif text-2xl font-bold text-white mb-1 shadow-black drop-shadow-md">{program.title}</h3>
+                         <div className="h-1 w-12 bg-teal-400 rounded-full group-hover:w-20 transition-all duration-500"></div>
+                      </div>
                     </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="font-serif text-xl font-bold text-slate-800 mb-2">{program.title}</h3>
-                      <p className="text-slate-600 text-sm mb-4 flex-grow leading-relaxed line-clamp-3">
+                    <div className="p-8 flex flex-col flex-grow bg-white/40">
+                      <p className="text-slate-600 text-sm mb-6 flex-grow leading-relaxed line-clamp-3">
                         {program.description}
                       </p>
-                      <div className="pt-4 border-t border-slate-200/60 mt-auto">
-                        <span className="text-teal-700 font-bold text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                          <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-                          Learn More <ArrowRight size={14} />
+                      <div className="mt-auto">
+                        <span className="inline-flex items-center gap-2 text-teal-800 font-bold text-sm group-hover:gap-3 transition-all">
+                          Learn More <ArrowRight size={14} className="text-teal-600" />
                         </span>
                       </div>
                     </div>
@@ -226,8 +264,8 @@ export const Home: React.FC = () => {
             ))}
           </motion.div>
           
-          <div className="text-center mt-12">
-            <Link to="/programs" className="inline-flex items-center gap-2 px-6 py-3 border border-slate-200 rounded-full text-slate-600 font-medium hover:bg-slate-50 hover:text-teal-600 transition-colors hover:border-teal-300">
+          <div className="text-center mt-20">
+            <Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-slate-100 rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200">
               View All Programs <ArrowRight size={16} />
             </Link>
           </div>

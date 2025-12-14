@@ -65,6 +65,8 @@ export interface SiteContent {
     vision: string;
     founderStory: string;
     values: string[];
+    homePreviewImage1?: string;
+    homePreviewImage2?: string;
   };
   contact: ContactInfo;
   programs: Program[];

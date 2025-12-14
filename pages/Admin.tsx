@@ -42,6 +42,15 @@ export const Admin: React.FC = () => {
 
   // Form States (Local buffers before saving to context/firebase)
   const [heroData, setHeroData] = useState(content.hero);
+  const [aboutData, setAboutData] = useState(content.about);
+
+  // Sync state with content if it changes (e.g. initial load)
+  useEffect(() => {
+    if (content) {
+      setHeroData(content.hero);
+      setAboutData(content.about);
+    }
+  }, [content]);
 
   // Scroll to top on tab change for mobile context
   useEffect(() => {
@@ -57,6 +66,11 @@ export const Admin: React.FC = () => {
   const handleSaveHero = async () => {
     await updateContent('hero', heroData);
     alert('Homepage updated successfully!');
+  };
+
+  const handleSaveAboutPreview = async () => {
+    await updateContent('about', aboutData);
+    alert('About preview images updated successfully!');
   };
 
   const handleSaveProgram = async () => {
@@ -352,6 +366,45 @@ export const Admin: React.FC = () => {
                         <Save size={20} /> Save Changes
                       </button>
                     </div>
+                  </div>
+                </div>
+
+                {/* About Preview Images Section */}
+                <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                      <ImageIcon className="text-teal-600" /> About Preview Images
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-2">Left Image</label>
+                           {aboutData.homePreviewImage1 && (
+                              <img src={aboutData.homePreviewImage1} className="w-full h-48 object-cover rounded-lg mb-2" />
+                           )}
+                          <ImageUploader 
+                            label="Upload Image 1" 
+                            accept="image/*"
+                            onUploadComplete={(data) => setAboutData({...aboutData, homePreviewImage1: data.url})}
+                          />
+                      </div>
+                      <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-2">Right Image</label>
+                           {aboutData.homePreviewImage2 && (
+                              <img src={aboutData.homePreviewImage2} className="w-full h-48 object-cover rounded-lg mb-2" />
+                           )}
+                          <ImageUploader 
+                            label="Upload Image 2" 
+                            accept="image/*"
+                            onUploadComplete={(data) => setAboutData({...aboutData, homePreviewImage2: data.url})}
+                          />
+                      </div>
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 mt-4">
+                      <button 
+                        onClick={handleSaveAboutPreview}
+                        className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 text-lg"
+                      >
+                        <Save size={20} /> Save Images
+                      </button>
                   </div>
                 </div>
               </div>

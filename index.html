@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -21,23 +21,34 @@
               teal: {
                 50: '#f0fdfa',
                 100: '#ccfbf1',
+                200: '#99f6e4',
+                300: '#5eead4',
+                400: '#2dd4bf',
+                500: '#14b8a6',
                 600: '#0d9488',
                 700: '#0f766e',
                 800: '#115e59',
                 900: '#134e4a',
+                950: '#042f2e',
               },
               slate: {
                 800: '#1e293b',
-                600: '#475569',
+                900: '#0f172a',
+                950: '#020617',
               }
             },
             animation: {
-              'fade-in': 'fadeIn 0.5s ease-out',
+              'fade-in': 'fadeIn 0.8s ease-out',
+              'float': 'float 6s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
                 '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
               }
             }
           }
@@ -47,18 +58,17 @@
     <style>
       /* Custom scrollbar */
       ::-webkit-scrollbar {
-        width: 10px;
+        width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f5f9;
+        background: #f8fafc;
       }
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 5px;
-        border: 2px solid #f1f5f9;
+        border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #0d9488;
+        background: #94a3b8;
       }
       
       /* Noise texture for better glassmorphism */
@@ -70,8 +80,12 @@
         height: 100%;
         pointer-events: none;
         z-index: 50;
-        opacity: 0.03;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+      }
+      
+      .text-balance {
+        text-wrap: balance;
       }
     </style>
   <script type="importmap">
@@ -91,7 +105,7 @@
 }
 </script>
 </head>
-  <body class="bg-teal-50 text-slate-800 font-sans antialiased selection:bg-teal-200 selection:text-teal-900 relative">
+  <body class="bg-gradient-to-br from-slate-50 via-teal-50/30 to-slate-100 text-slate-800 font-sans antialiased selection:bg-teal-600 selection:text-white relative min-h-screen">
     <div class="bg-noise"></div>
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>

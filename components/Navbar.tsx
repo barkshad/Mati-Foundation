@@ -30,10 +30,14 @@ export const Navbar: React.FC = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
+  const isHome = location.pathname === '/';
+
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ease-in-out ${
-        isScrolled || isMobileOpen ? 'bg-white/80 backdrop-blur-xl shadow-lg border-b border-white/20 text-slate-800 py-3' : 'bg-transparent text-white py-6'
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        isScrolled || isMobileOpen || !isHome
+          ? 'bg-white/70 backdrop-blur-xl shadow-sm border-b border-white/20 text-slate-800 py-3' 
+          : 'bg-transparent text-white py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,53 +45,47 @@ export const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group relative z-50">
              <motion.div 
-               className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-teal-600/20"
+               className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-teal-900/10 border border-white/20"
                {...({
-                 whileHover: { scale: 1.1, rotate: 3 },
+                 whileHover: { scale: 1.05, rotate: 2 },
                  transition: { type: "spring", stiffness: 400, damping: 15 }
                } as any)}
              >
                M
              </motion.div>
-             <span className={`font-serif text-2xl font-bold tracking-tight ${isScrolled || isMobileOpen ? 'text-teal-900' : 'text-white'}`}>
+             <span className={`font-serif text-2xl font-bold tracking-tight ${isScrolled || isMobileOpen || !isHome ? 'text-slate-900' : 'text-white'}`}>
                Mati<span className="text-teal-500">.</span>
              </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className={`relative text-sm font-medium transition-colors ${
-                  location.pathname === link.path ? 'text-teal-500 font-bold' : ''
-                } ${!isScrolled && location.pathname === '/' ? 'text-white/90 hover:text-white' : 'hover:text-teal-600'}`}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-full ${
+                  location.pathname === link.path 
+                    ? (isScrolled || !isHome ? 'text-teal-700 font-bold bg-teal-50' : 'text-white font-bold bg-white/20 backdrop-blur-md') 
+                    : (isScrolled || !isHome ? 'text-slate-600 hover:text-teal-600 hover:bg-slate-50' : 'text-white/80 hover:text-white hover:bg-white/10')
+                }`}
               >
                 {link.name}
-                {location.pathname === link.path && (
-                  <motion.span 
-                    {...({
-                      layoutId: "underline",
-                      className: "absolute -bottom-1 left-0 w-full h-0.5 bg-teal-500 rounded-full",
-                      transition: { type: "spring", stiffness: 300, damping: 20 }
-                    } as any)}
-                  />
-                )}
               </Link>
             ))}
             <motion.div
+              className="ml-4"
               {...({
-                whileHover: { scale: 1.05, y: -2 },
+                whileHover: { scale: 1.05 },
                 whileTap: { scale: 0.95 },
                 transition: { type: "spring", stiffness: 400, damping: 15 }
               } as any)}
             >
               <Link
                 to="/get-involved"
-                className="px-6 py-2.5 rounded-full bg-teal-600 text-white font-medium hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/30 flex items-center gap-2"
+                className="px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center gap-2 border border-slate-700"
               >
-                <Heart size={16} fill="currentColor" className="animate-pulse" />
+                <Heart size={16} fill="currentColor" className="text-teal-400" />
                 <span>Donate</span>
               </Link>
             </motion.div>
@@ -95,10 +93,10 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Toggle */}
           <button
-            className={`md:hidden p-2 rounded-md transition-colors relative z-50 ${isScrolled || isMobileOpen ? 'hover:bg-slate-100' : 'hover:bg-white/10'}`}
+            className={`md:hidden p-2 rounded-full transition-colors relative z-50 ${isScrolled || isMobileOpen || !isHome ? 'bg-slate-100 hover:bg-slate-200 text-slate-800' : 'bg-white/10 hover:bg-white/20 text-white'}`}
             onClick={() => setIsMobileOpen(!isMobileOpen)}
           >
-            {isMobileOpen ? <X className="text-slate-800" /> : <Menu className={isScrolled ? 'text-slate-800' : 'text-white'} />}
+            {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
@@ -112,10 +110,10 @@ export const Navbar: React.FC = () => {
               animate: { opacity: 1, height: 'auto' },
               exit: { opacity: 0, height: 0 },
               transition: { type: "spring", stiffness: 300, damping: 30 },
-              className: "md:hidden bg-white/90 backdrop-blur-xl border-t border-gray-100 overflow-hidden shadow-xl"
+              className: "md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 overflow-hidden shadow-xl absolute top-full left-0 w-full"
             } as any)}
           >
-            <div className="px-4 pt-4 pb-8 space-y-2">
+            <div className="px-6 py-8 space-y-3">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.name}
@@ -127,9 +125,9 @@ export const Navbar: React.FC = () => {
                 >
                   <Link
                     to={link.path}
-                    className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                    className={`block px-4 py-4 rounded-2xl text-lg font-medium transition-colors ${
                       location.pathname === link.path 
-                        ? 'bg-teal-50 text-teal-700' 
+                        ? 'bg-teal-50 text-teal-700 border border-teal-100' 
                         : 'text-slate-600 hover:text-teal-600 hover:bg-slate-50'
                     }`}
                     onClick={() => setIsMobileOpen(false)}
@@ -139,7 +137,7 @@ export const Navbar: React.FC = () => {
                 </motion.div>
               ))}
               <motion.div 
-                className="pt-4 mt-4 border-t border-slate-100"
+                className="pt-6 mt-4 border-t border-slate-100"
                 {...({
                   initial: { y: 20, opacity: 0 },
                   animate: { y: 0, opacity: 1 },
@@ -148,7 +146,7 @@ export const Navbar: React.FC = () => {
               >
                 <Link
                   to="/get-involved"
-                  className="block text-center w-full px-5 py-3 rounded-full bg-teal-600 text-white font-bold shadow-md active:scale-95 transition-transform"
+                  className="block text-center w-full px-5 py-4 rounded-2xl bg-slate-900 text-white font-bold shadow-xl active:scale-95 transition-transform"
                   onClick={() => setIsMobileOpen(false)}
                 >
                   Donate Now

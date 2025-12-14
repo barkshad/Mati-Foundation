@@ -43,6 +43,15 @@ export interface ContactInfo {
   mpesa: string;
 }
 
+export interface MediaItem {
+  id: string;
+  url: string;
+  publicId: string;
+  type: 'image' | 'video';
+  category: 'Education' | 'Community' | 'Welfare' | 'General';
+  createdAt: string;
+}
+
 export interface SiteContent {
   hero: {
     headline: string;
@@ -59,12 +68,12 @@ export interface SiteContent {
   programs: Program[];
   stories: Story[];
   children: ChildProfile[];
-  gallery: string[];
+  gallery: MediaItem[];
 }
 
 export interface AdminContextType {
   isAuthenticated: boolean;
-  login: (email: string) => Promise<void>;
+  login: (password: string) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
 }

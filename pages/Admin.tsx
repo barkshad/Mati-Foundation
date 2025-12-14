@@ -4,11 +4,11 @@ import { useContent } from '../contexts/ContentContext';
 import { Navigate } from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
-  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, User 
+  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Filter
 } from 'lucide-react';
 import { ImageUploader } from '../components/ImageUploader';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Program, ChildProfile, Story } from '../types';
+import { Program, ChildProfile, Story, MediaItem } from '../types';
 
 // Simple UUID generator for new items
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -24,6 +24,9 @@ export const Admin: React.FC = () => {
   const [editingProgram, setEditingProgram] = useState<Partial<Program> | null>(null);
   const [editingChild, setEditingChild] = useState<Partial<ChildProfile> | null>(null);
   const [editingStory, setEditingStory] = useState<Partial<Story> | null>(null);
+
+  // Gallery Upload State
+  const [galleryCategory, setGalleryCategory] = useState<MediaItem['category']>('General');
 
   // Form States (Local buffers before saving to context/firebase)
   const [heroData, setHeroData] = useState(content.hero);
@@ -110,14 +113,23 @@ export const Admin: React.FC = () => {
     await updateContent('stories', newStories);
   };
 
-  const handleGalleryUpload = async (url: string) => {
-    const newGallery = [...content.gallery, url];
+  const handleGalleryUpload = async (result: { url: string; publicId: string; type: 'image' | 'video' }) => {
+    const newItem: MediaItem = {
+      id: generateId(),
+      url: result.url,
+      publicId: result.publicId,
+      type: result.type,
+      category: galleryCategory,
+      createdAt: new Date().toISOString()
+    };
+    
+    const newGallery = [newItem, ...content.gallery];
     await updateContent('gallery', newGallery);
   };
 
-  const handleDeleteGalleryImage = async (index: number) => {
-    if(!window.confirm("Remove this image from gallery?")) return;
-    const newGallery = content.gallery.filter((_, i) => i !== index);
+  const handleDeleteGalleryItem = async (id: string) => {
+    if(!window.confirm("Delete this media item? Note: This removes it from the website but may remain in Cloudinary backup.")) return;
+    const newGallery = content.gallery.filter(item => item.id !== id);
     await updateContent('gallery', newGallery);
   };
 
@@ -247,13 +259,16 @@ export const Admin: React.FC = () => {
                   </div>
 
                   <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                    <label className="block text-sm font-bold text-slate-700 mb-4">Background Image</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-4">Background Image (or Video Poster)</label>
                     <div className="flex gap-6 items-start">
-                       <img src={heroData.heroImage} alt="Current Hero" className="w-32 h-20 object-cover rounded-lg shadow-sm" />
+                       {heroData.heroImage && (
+                          <img src={heroData.heroImage} alt="Current Hero" className="w-32 h-20 object-cover rounded-lg shadow-sm" />
+                       )}
                        <div className="flex-1">
                           <ImageUploader 
                             label=""
-                            onUploadComplete={(url) => setHeroData({...heroData, heroImage: url})} 
+                            accept="image/*"
+                            onUploadComplete={(data) => setHeroData({...heroData, heroImage: data.url})} 
                           />
                           <p className="text-xs text-slate-400 mt-2">Recommended: 1920x1080px (JPG)</p>
                        </div>
@@ -332,7 +347,10 @@ export const Admin: React.FC = () => {
                       />
                       <div className="p-4 bg-slate-50 rounded-lg">
                         <p className="text-sm font-bold mb-2">Cover Image</p>
-                        <ImageUploader onUploadComplete={url => setEditingProgram({...editingProgram, image: url})} />
+                        <ImageUploader 
+                          accept="image/*"
+                          onUploadComplete={data => setEditingProgram({...editingProgram, image: data.url})} 
+                        />
                         {editingProgram.image && <img src={editingProgram.image} className="h-32 rounded mt-2" />}
                       </div>
                       <div className="flex justify-end gap-3 pt-4">
@@ -385,7 +403,11 @@ export const Admin: React.FC = () => {
                        <input className="w-full p-3 border rounded-lg" placeholder="Dream (e.g. Doctor)" value={editingChild.dream} onChange={e => setEditingChild({...editingChild, dream: e.target.value})} />
                        <textarea className="w-full p-3 border rounded-lg h-32" placeholder="Biography / Story" value={editingChild.bio} onChange={e => setEditingChild({...editingChild, bio: e.target.value})} />
                        <div className="p-4 bg-slate-50 rounded-lg">
-                          <ImageUploader label="Profile Photo" onUploadComplete={url => setEditingChild({...editingChild, image: url})} />
+                          <ImageUploader 
+                            label="Profile Photo" 
+                            accept="image/*"
+                            onUploadComplete={data => setEditingChild({...editingChild, image: data.url})} 
+                          />
                           {editingChild.image && <img src={editingChild.image} className="h-24 w-24 object-cover rounded-full mt-2" />}
                        </div>
                        <label className="flex items-center gap-2 cursor-pointer">
@@ -439,7 +461,11 @@ export const Admin: React.FC = () => {
                         </div>
                         <textarea className="w-full p-3 border rounded-lg h-24" placeholder="Short Excerpt (appears on cards)" value={editingStory.excerpt} onChange={e => setEditingStory({...editingStory, excerpt: e.target.value})} />
                         <textarea className="w-full p-3 border rounded-lg h-64 font-mono text-sm" placeholder="Full Content..." value={editingStory.content} onChange={e => setEditingStory({...editingStory, content: e.target.value})} />
-                        <ImageUploader label="Cover Image" onUploadComplete={url => setEditingStory({...editingStory, image: url})} />
+                        <ImageUploader 
+                          label="Cover Image" 
+                          accept="image/*"
+                          onUploadComplete={data => setEditingStory({...editingStory, image: data.url})} 
+                        />
                         <div className="flex justify-end gap-3 pt-4">
                            <button onClick={() => setEditingStory(null)} className="px-6 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancel</button>
                            <button onClick={handleSaveStory} className="px-6 py-2 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700">Publish Story</button>
@@ -454,16 +480,43 @@ export const Admin: React.FC = () => {
           {activeTab === 'gallery' && (
             <div className="space-y-6">
                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                  <h2 className="text-lg font-bold mb-4">Add New Photo</h2>
-                  <ImageUploader onUploadComplete={handleGalleryUpload} label="Upload to Cloudinary" />
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Film size={20} className="text-teal-600"/> Add New Media</h2>
+                  <div className="flex flex-col md:flex-row gap-4 mb-4">
+                    <select 
+                      className="p-3 border rounded-lg bg-white min-w-[200px]" 
+                      value={galleryCategory} 
+                      onChange={(e) => setGalleryCategory(e.target.value as any)}
+                    >
+                      <option value="General">General</option>
+                      <option value="Education">Education</option>
+                      <option value="Community">Community</option>
+                      <option value="Welfare">Welfare</option>
+                    </select>
+                    <div className="flex-1">
+                      <ImageUploader 
+                        onUploadComplete={handleGalleryUpload} 
+                        label="Upload Photo or Video to Cloudinary"
+                        accept="image/*,video/*" 
+                      />
+                    </div>
+                  </div>
                </div>
                
                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {content.gallery.map((url, idx) => (
-                     <div key={idx} className="relative group rounded-xl overflow-hidden aspect-square">
-                        <img src={url} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                           <button onClick={() => handleDeleteGalleryImage(idx)} className="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-transform hover:scale-110">
+                  {content.gallery.map((item) => (
+                     <div key={item.id} className="relative group rounded-xl overflow-hidden aspect-square bg-slate-100">
+                        {item.type === 'video' ? (
+                          <div className="w-full h-full relative">
+                            <video src={item.url} className="w-full h-full object-cover" muted />
+                            <div className="absolute top-2 left-2 bg-black/50 text-white p-1 rounded-full"><Film size={12}/></div>
+                          </div>
+                        ) : (
+                          <img src={item.url} className="w-full h-full object-cover" loading="lazy" />
+                        )}
+                        
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                           <span className="text-white text-xs font-bold px-2 py-1 bg-teal-600 rounded-full">{item.category}</span>
+                           <button onClick={() => handleDeleteGalleryItem(item.id)} className="p-3 bg-red-600 text-white rounded-full hover:bg-red-700 transition-transform hover:scale-110">
                               <Trash2 size={20} />
                            </button>
                         </div>

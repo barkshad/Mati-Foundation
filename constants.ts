@@ -113,11 +113,53 @@ export const DEFAULT_CONTENT: SiteContent = {
     }
   ],
   gallery: [
-    "https://picsum.photos/800/800?random=10",
-    "https://picsum.photos/800/800?random=11",
-    "https://picsum.photos/800/800?random=12",
-    "https://picsum.photos/800/800?random=13",
-    "https://picsum.photos/800/800?random=14",
-    "https://picsum.photos/800/800?random=15",
+    {
+      id: "g1",
+      url: "https://picsum.photos/800/800?random=10",
+      publicId: "demo/10",
+      type: "image",
+      category: "General",
+      createdAt: "2023-01-01T00:00:00.000Z"
+    },
+    {
+      id: "g2",
+      url: "https://picsum.photos/800/800?random=11",
+      publicId: "demo/11",
+      type: "image",
+      category: "Education",
+      createdAt: "2023-01-02T00:00:00.000Z"
+    },
+    {
+      id: "g3",
+      url: "https://picsum.photos/800/800?random=12",
+      publicId: "demo/12",
+      type: "image",
+      category: "Community",
+      createdAt: "2023-01-03T00:00:00.000Z"
+    },
+    {
+      id: "g4",
+      url: "https://picsum.photos/800/800?random=13",
+      publicId: "demo/13",
+      type: "image",
+      category: "Welfare",
+      createdAt: "2023-01-04T00:00:00.000Z"
+    },
+    {
+      id: "g5",
+      url: "https://picsum.photos/800/800?random=14",
+      publicId: "demo/14",
+      type: "image",
+      category: "General",
+      createdAt: "2023-01-05T00:00:00.000Z"
+    },
+    {
+      id: "g6",
+      url: "https://picsum.photos/800/800?random=15",
+      publicId: "demo/15",
+      type: "image",
+      category: "Education",
+      createdAt: "2023-01-06T00:00:00.000Z"
+    }
   ]
 };

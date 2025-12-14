@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { auth } from '../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { AdminContextType } from '../types';
 
-const AuthContext = createContext<AdminContextType | undefined>(undefined);
+interface AuthContextType {
+  isAuthenticated: boolean;
+  login: (password: string) => Promise<boolean>;
+  logout: () => void;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -12,31 +17,37 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return unsubscribe;
+    // Check local storage for persisted session
+    const storedAuth = localStorage.getItem('mati_admin_auth');
+    if (storedAuth === 'true') {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   }, []);
 
-  const login = async (email: string) => {
-    // In a real app, we would take a password parameter here.
-    // For this demo structure, we assume the interaction happens in the component
-    // This is a placeholder for the logic flow.
-    // Real implementation: await signInWithEmailAndPassword(auth, email, password);
-    console.log("Login triggered for", email);
+  const login = async (password: string): Promise<boolean> => {
+    // Simulating API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    if (password === "12345") {
+      setIsAuthenticated(true);
+      localStorage.setItem('mati_admin_auth', 'true');
+      return true;
+    }
+    return false;
   };
 
-  const logout = async () => {
-    await signOut(auth);
+  const logout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('mati_admin_auth');
   };
 
   const value = {
-    isAuthenticated: !!user,
+    isAuthenticated,
     login,
     logout,
     loading

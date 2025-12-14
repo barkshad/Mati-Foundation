@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Mail, Phone, MapPin, Heart } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
 
 export const Footer: React.FC = () => {
@@ -32,7 +32,6 @@ export const Footer: React.FC = () => {
               <li><Link to="/programs" className="hover:text-teal-400">Our Programs</Link></li>
               <li><Link to="/sponsorship" className="hover:text-teal-400">Sponsor a Child</Link></li>
               <li><Link to="/stories" className="hover:text-teal-400">Impact Stories</Link></li>
-              <li><Link to="/admin" className="hover:text-teal-400 text-xs opacity-50">Admin Login</Link></li>
             </ul>
           </div>
 
@@ -74,10 +73,16 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
           <p>&copy; {year} Mati Foundation. All rights reserved.</p>
-          <div className="flex items-center gap-1 mt-2 md:mt-0">
-            <span>Made with</span>
-            <Heart size={10} className="text-red-500 fill-red-500" />
-            <span>in Kenya</span>
+          <div className="flex items-center gap-4 mt-2 md:mt-0">
+            <Link to="/admin" className="flex items-center gap-1 hover:text-white transition-colors opacity-30 hover:opacity-100">
+              <Lock size={10} />
+              <span>Staff Login</span>
+            </Link>
+            <div className="flex items-center gap-1">
+               <span>Made with</span>
+               <Heart size={10} className="text-red-500 fill-red-500" />
+               <span>in Kenya</span>
+            </div>
           </div>
         </div>
       </div>

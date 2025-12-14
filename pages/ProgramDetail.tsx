@@ -22,7 +22,7 @@ export const ProgramDetail: React.FC = () => {
         {program.mediaType === 'video' ? (
              <video 
                 src={program.image} 
-                className="w-full h-full object-cover opacity-80"
+                className="w-full h-full object-cover"
                 autoPlay
                 muted
                 loop

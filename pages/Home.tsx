@@ -46,7 +46,7 @@ export const Home: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-slate-900">
           <motion.img 
             {...({
               initial: { scale: 1.1 },
@@ -55,11 +55,11 @@ export const Home: React.FC = () => {
             } as any)}
             src={content.hero.heroImage} 
             alt="Mati Foundation Children" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-90"
           />
-          {/* Enhanced gradient for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-950/90 via-teal-900/70 to-slate-900/30"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-teal-50 via-transparent to-transparent opacity-90"></div>
+          {/* Lighter gradient for better visibility of the image while keeping text readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-950/80 via-teal-900/40 to-black/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-teal-50 via-transparent to-transparent opacity-60"></div>
         </div>
 
         {/* Hero Content */}

@@ -56,7 +56,20 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
       const localData = localStorage.getItem('mati_content');
       if (localData) {
         try {
-          setContent(JSON.parse(localData));
+          const parsedData = JSON.parse(localData);
+          // Merge to ensure structure exists
+          const mergedLocal = {
+            ...DEFAULT_CONTENT,
+            ...parsedData,
+            hero: { ...DEFAULT_CONTENT.hero, ...(parsedData.hero || {}) },
+            about: { ...DEFAULT_CONTENT.about, ...(parsedData.about || {}) },
+            contact: { ...DEFAULT_CONTENT.contact, ...(parsedData.contact || {}) },
+            programs: parsedData.programs || DEFAULT_CONTENT.programs,
+            stories: parsedData.stories || DEFAULT_CONTENT.stories,
+            children: parsedData.children || DEFAULT_CONTENT.children,
+            gallery: parsedData.gallery || DEFAULT_CONTENT.gallery,
+          };
+          setContent(mergedLocal);
         } catch (e) {
           console.error("Error parsing local content", e);
         }
@@ -70,10 +83,24 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
     
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
-        const data = docSnap.data() as any;
+        const data = docSnap.data();
+        
+        // Deep merge to ensure no undefined errors if DB has partial data
+        const mergedData: SiteContent = {
+            ...DEFAULT_CONTENT,
+            ...data,
+            hero: { ...DEFAULT_CONTENT.hero, ...(data.hero || {}) },
+            about: { ...DEFAULT_CONTENT.about, ...(data.about || {}) },
+            contact: { ...DEFAULT_CONTENT.contact, ...(data.contact || {}) },
+            programs: data.programs || DEFAULT_CONTENT.programs,
+            stories: data.stories || DEFAULT_CONTENT.stories,
+            children: data.children || DEFAULT_CONTENT.children,
+            gallery: data.gallery || DEFAULT_CONTENT.gallery,
+        };
+
         // Migration helper: If gallery is old string[], convert to MediaItem[] locally to prevent crash
-        if (Array.isArray(data.gallery) && typeof data.gallery[0] === 'string') {
-           data.gallery = data.gallery.map((url: string, i: number) => ({
+        if (Array.isArray(mergedData.gallery) && mergedData.gallery.length > 0 && typeof mergedData.gallery[0] === 'string') {
+           mergedData.gallery = (mergedData.gallery as unknown as string[]).map((url: string, i: number) => ({
              id: `legacy-${i}`,
              url,
              publicId: 'legacy',
@@ -82,7 +109,7 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
              createdAt: new Date().toISOString()
            }));
         }
-        setContent(data as SiteContent);
+        setContent(mergedData as SiteContent);
       } else {
         console.log("Document does not exist in Firestore. Using defaults.");
         // Initialize DB with defaults if needed

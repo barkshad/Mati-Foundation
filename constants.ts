@@ -10,8 +10,8 @@ export const FIREBASE_CONFIG = {
   measurementId: "G-EHP18C5S41"
 };
 
-export const CLOUDINARY_CLOUD_NAME = "demo"; // Replace with real cloud name
-export const CLOUDINARY_UPLOAD_PRESET = "mati_uploads"; // Replace with real preset
+export const CLOUDINARY_CLOUD_NAME = "dycbotqpw"; 
+export const CLOUDINARY_UPLOAD_PRESET = "mati_unsigned"; 
 
 export const DEFAULT_CONTENT: SiteContent = {
   hero: {

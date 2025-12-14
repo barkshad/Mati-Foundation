@@ -29,7 +29,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     address: "P.O. Box 123, Kilifi, Kenya",
     email: "info@matifoundation.org",
     phone: "+254 700 000 000",
-    bankDetails: "KCB Bank, Kilifi Branch, Acc: 1234567890",
+    bankDetails: "Diamond Trust Bank, Acc: 0200471001 (Matilda John Kashindo), Branch: Kilifi",
     mpesa: "Paybill: 123456, Acc: Donation",
   },
   programs: [

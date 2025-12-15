@@ -20,26 +20,60 @@ export const Home: React.FC = () => {
     );
   }
 
+  // General container stagger
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
       transition: { 
-        staggerChildren: 0.15,
+        staggerChildren: 0.2,
         delayChildren: 0.1
       }
     }
   };
 
+  // Standard fade up for buttons/badges
   const itemVariants = {
-    hidden: { y: 60, opacity: 0, scale: 0.95 },
+    hidden: { y: 30, opacity: 0 },
     visible: { 
       y: 0, 
       opacity: 1, 
-      scale: 1,
-      transition: { type: "spring", stiffness: 100, damping: 20, mass: 1 }
+      transition: { type: "spring", stiffness: 50, damping: 20 }
     }
   };
+
+  // Specific staggered word animation for Headline
+  const headlineContainerVariants = {
+    hidden: { opacity: 1 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.2,
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const wordVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 40,
+      filter: "blur(10px)",
+      scale: 1.1
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      filter: "blur(0px)",
+      scale: 1,
+      transition: { 
+        duration: 0.8,
+        ease: [0.2, 0.65, 0.3, 0.9], // Premium ease-out-quart/quint blend
+      }
+    }
+  };
+
+  const headlineWords = content.hero.headline.split(" ");
 
   return (
     <div className="w-full overflow-hidden">
@@ -49,17 +83,17 @@ export const Home: React.FC = () => {
         <div className="absolute inset-0 z-0 bg-slate-900">
           <motion.img 
             {...({
-              initial: { scale: 1.15 },
-              animate: { scale: 1 },
-              transition: { duration: 12, ease: "easeOut" }
+              initial: { scale: 1.2, opacity: 0 },
+              animate: { scale: 1, opacity: 0.9 },
+              transition: { duration: 2.5, ease: "easeOut" }
             } as any)}
             src={content.hero.heroImage} 
             alt="Mati Foundation Children" 
-            className="w-full h-full object-cover opacity-90"
+            className="w-full h-full object-cover"
           />
           {/* Refined gradient for better visibility of image and text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/30 via-transparent to-slate-900/90"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/40 via-transparent to-slate-900/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-transparent to-slate-900/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-transparent to-slate-900/50"></div>
         </div>
 
         {/* Hero Content */}
@@ -78,11 +112,24 @@ export const Home: React.FC = () => {
               </span>
             </motion.div>
             
+            {/* Animated Headline */}
             <motion.h1 
-              {...({ variants: itemVariants } as any)} 
+              {...({ 
+                variants: headlineContainerVariants,
+                initial: "hidden",
+                animate: "visible",
+              } as any)}
               className="font-serif text-5xl sm:text-7xl md:text-8xl font-bold text-white mb-8 leading-[1.1] tracking-tight drop-shadow-xl text-balance"
             >
-              {content.hero.headline}
+              {headlineWords.map((word, index) => (
+                <motion.span 
+                  key={index} 
+                  variants={wordVariants}
+                  className="inline-block mr-[0.2em] last:mr-0"
+                >
+                  {word}
+                </motion.span>
+              ))}
             </motion.h1>
             
             <motion.p 
@@ -118,7 +165,7 @@ export const Home: React.FC = () => {
           className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
+          transition={{ delay: 2, duration: 1 }}
         >
           <span className="text-[10px] uppercase tracking-widest">Scroll</span>
           <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
@@ -133,7 +180,7 @@ export const Home: React.FC = () => {
             initial: { y: 100, opacity: 0 },
             whileInView: { y: 0, opacity: 1 },
             viewport: { once: true, margin: "-100px" },
-            transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 }
+            transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.6 }
           } as any)}
         >
           <AnimatedCounter value={150} suffix="+" label="Children Educated" />

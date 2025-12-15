@@ -4,7 +4,7 @@ import { useContent } from '../contexts/ContentContext';
 import { Navigate } from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
-  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Menu, X, Check, ChevronLeft, Play
+  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Video, Film, Menu, X, Check, ChevronLeft, Play, Lock
 } from 'lucide-react';
 import { ImageUploader } from '../components/ImageUploader';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -25,7 +25,7 @@ const getPreviewUrl = (url: string, type?: 'image' | 'video') => {
 }
 
 export const Admin: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, changePassword } = useAuth();
   const { content, updateContent } = useContent();
   
   // Navigation State
@@ -46,6 +46,7 @@ export const Admin: React.FC = () => {
   
   // Settings Form State
   const [contactData, setContactData] = useState(content.contact);
+  const [newAdminPassword, setNewAdminPassword] = useState('');
 
   // Sync state with content if it changes (e.g. initial load)
   useEffect(() => {
@@ -80,6 +81,16 @@ export const Admin: React.FC = () => {
   const handleSaveContact = async () => {
     await updateContent('contact', contactData);
     alert('Settings updated successfully!');
+  }
+
+  const handleUpdatePassword = async () => {
+    if(!newAdminPassword.trim()) {
+        alert("Please enter a valid password");
+        return;
+    }
+    await changePassword(newAdminPassword);
+    setNewAdminPassword('');
+    alert('Admin password updated successfully!');
   }
 
   const handleSaveProgram = async () => {
@@ -777,58 +788,86 @@ export const Admin: React.FC = () => {
 
             {/* SETTINGS TAB */}
             {activeTab === 'settings' && (
-               <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100 max-w-2xl mx-auto md:mx-0">
-                  <h2 className="text-xl font-bold mb-6">Contact & Payment Settings</h2>
-                  <div className="space-y-5">
-                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Email</label>
-                        <input 
-                           className="w-full p-4 border rounded-xl text-base" 
-                           value={contactData.email} 
-                           onChange={(e) => setContactData({...contactData, email: e.target.value})}
-                        />
-                     </div>
-                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
-                        <input 
-                           className="w-full p-4 border rounded-xl text-base" 
-                           value={contactData.phone}
-                           onChange={(e) => setContactData({...contactData, phone: e.target.value})}
-                        />
-                     </div>
-                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">WhatsApp</label>
-                        <input 
-                           className="w-full p-4 border rounded-xl text-base" 
-                           value={contactData.whatsapp}
-                           onChange={(e) => setContactData({...contactData, whatsapp: e.target.value})}
-                        />
-                     </div>
-                     <div className="pt-6 border-t space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Bank Details</label>
-                        <textarea 
-                           className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" 
-                           value={contactData.bankDetails}
-                           onChange={(e) => setContactData({...contactData, bankDetails: e.target.value})}
-                        />
-                     </div>
-                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">M-Pesa</label>
-                        <input 
-                           className="w-full p-4 border rounded-xl font-mono text-sm" 
-                           value={contactData.mpesa}
-                           onChange={(e) => setContactData({...contactData, mpesa: e.target.value})}
-                        />
-                     </div>
-                     <div className="pt-4">
-                        <button 
-                           onClick={handleSaveContact}
-                           className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
-                        >
-                           Save Settings
-                        </button>
-                     </div>
-                  </div>
+               <div className="max-w-2xl mx-auto md:mx-0">
+                   <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                      <h2 className="text-xl font-bold mb-6">Contact & Payment Settings</h2>
+                      <div className="space-y-5">
+                         <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase">Email</label>
+                            <input 
+                               className="w-full p-4 border rounded-xl text-base" 
+                               value={contactData.email} 
+                               onChange={(e) => setContactData({...contactData, email: e.target.value})}
+                            />
+                         </div>
+                         <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
+                            <input 
+                               className="w-full p-4 border rounded-xl text-base" 
+                               value={contactData.phone}
+                               onChange={(e) => setContactData({...contactData, phone: e.target.value})}
+                            />
+                         </div>
+                         <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase">WhatsApp</label>
+                            <input 
+                               className="w-full p-4 border rounded-xl text-base" 
+                               value={contactData.whatsapp}
+                               onChange={(e) => setContactData({...contactData, whatsapp: e.target.value})}
+                            />
+                         </div>
+                         <div className="pt-6 border-t space-y-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase">Bank Details</label>
+                            <textarea 
+                               className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" 
+                               value={contactData.bankDetails}
+                               onChange={(e) => setContactData({...contactData, bankDetails: e.target.value})}
+                            />
+                         </div>
+                         <div className="space-y-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase">M-Pesa</label>
+                            <input 
+                               className="w-full p-4 border rounded-xl font-mono text-sm" 
+                               value={contactData.mpesa}
+                               onChange={(e) => setContactData({...contactData, mpesa: e.target.value})}
+                            />
+                         </div>
+                         <div className="pt-4">
+                            <button 
+                               onClick={handleSaveContact}
+                               className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
+                            >
+                               Save Settings
+                            </button>
+                         </div>
+                      </div>
+                   </div>
+
+                   <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h2 className="text-xl font-bold mb-6 text-slate-800 flex items-center gap-2">
+                            <Lock className="text-teal-600" size={24} /> Admin Security
+                        </h2>
+                        <div className="space-y-5">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-500 uppercase">New Password</label>
+                                <input 
+                                    type="password"
+                                    className="w-full p-4 border rounded-xl text-base" 
+                                    value={newAdminPassword}
+                                    onChange={(e) => setNewAdminPassword(e.target.value)}
+                                    placeholder="Enter new password"
+                                />
+                            </div>
+                            <div className="pt-4">
+                                <button 
+                                    onClick={handleUpdatePassword}
+                                    className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
+                                >
+                                    Update Password
+                                </button>
+                            </div>
+                        </div>
+                   </div>
                </div>
             )}
 

@@ -81,6 +81,7 @@ export interface AdminContextType {
   login: (password: string) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
+  changePassword: (newPassword: string) => Promise<void>;
 }
 
 export interface ContentContextType {

@@ -12,39 +12,87 @@ export const useContent = () => {
   return context;
 };
 
-// Ensure defaults match the new types
+// Default gallery items for fallback
+const DEFAULT_GALLERY = [
+  {
+    id: 'g1',
+    url: 'https://picsum.photos/800/800?random=10',
+    publicId: 'demo/1',
+    type: 'image',
+    category: 'General',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'g2',
+    url: 'https://picsum.photos/800/800?random=11',
+    publicId: 'demo/2',
+    type: 'image',
+    category: 'Education',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'g3',
+    url: 'https://picsum.photos/800/800?random=12',
+    publicId: 'demo/3',
+    type: 'image',
+    category: 'Community',
+    createdAt: new Date().toISOString()
+  }
+];
+
 const INITIAL_CONTENT: SiteContent = {
   ...DEFAULT_CONTENT,
-  gallery: [
-    {
-      id: 'g1',
-      url: 'https://picsum.photos/800/800?random=10',
-      publicId: 'demo/1',
-      type: 'image',
-      category: 'General',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'g2',
-      url: 'https://picsum.photos/800/800?random=11',
-      publicId: 'demo/2',
-      type: 'image',
-      category: 'Education',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: 'g3',
-      url: 'https://picsum.photos/800/800?random=12',
-      publicId: 'demo/3',
-      type: 'image',
-      category: 'Community',
-      createdAt: new Date().toISOString()
+  gallery: DEFAULT_GALLERY as any
+};
+
+// Helper to load from local storage synchronously
+const loadFromLocalStorage = (): SiteContent => {
+  if (typeof window === 'undefined') return INITIAL_CONTENT;
+  
+  const localData = localStorage.getItem('mati_content');
+  if (localData) {
+    try {
+      const parsedData = JSON.parse(localData);
+      // Deep merge to ensure structure exists even if local data is partial or old
+      const mergedLocal = {
+        ...DEFAULT_CONTENT,
+        ...parsedData,
+        hero: { ...DEFAULT_CONTENT.hero, ...(parsedData.hero || {}) },
+        about: { ...DEFAULT_CONTENT.about, ...(parsedData.about || {}) },
+        contact: { ...DEFAULT_CONTENT.contact, ...(parsedData.contact || {}) },
+        programs: parsedData.programs || DEFAULT_CONTENT.programs,
+        stories: parsedData.stories || DEFAULT_CONTENT.stories,
+        children: parsedData.children || DEFAULT_CONTENT.children,
+        gallery: parsedData.gallery || DEFAULT_CONTENT.gallery,
+      };
+      
+      // Fix potential gallery legacy format issues immediately
+      if (Array.isArray(mergedLocal.gallery) && mergedLocal.gallery.length > 0 && typeof mergedLocal.gallery[0] === 'string') {
+           mergedLocal.gallery = (mergedLocal.gallery as unknown as string[]).map((url: string, i: number) => ({
+             id: `legacy-${i}`,
+             url,
+             publicId: 'legacy',
+             type: 'image',
+             category: 'General',
+             createdAt: new Date().toISOString()
+           }));
+      }
+
+      return mergedLocal as SiteContent;
+    } catch (e) {
+      console.error("Error parsing local content", e);
     }
-  ]
+  }
+  return INITIAL_CONTENT;
 };
 
 export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [content, setContent] = useState<SiteContent>(INITIAL_CONTENT);
+  // Initialize state directly from LocalStorage to prevent flash of defaults
+  const [content, setContent] = useState<SiteContent>(loadFromLocalStorage);
+  
+  // If we loaded from localStorage successfully, we might not be "loading" in the user's eyes (demo mode),
+  // but for Firebase we still want to fetch fresh data. 
+  // However, initializing with local data solves the "flash" of defaults.
   const [loading, setLoading] = useState(true);
 
   // Check if we are using the placeholder API key.
@@ -53,27 +101,7 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
   useEffect(() => {
     if (isDemoMode) {
       console.log("⚠️ No valid Firebase configuration detected. Running in Offline/Demo Mode using LocalStorage.");
-      const localData = localStorage.getItem('mati_content');
-      if (localData) {
-        try {
-          const parsedData = JSON.parse(localData);
-          // Merge to ensure structure exists
-          const mergedLocal = {
-            ...DEFAULT_CONTENT,
-            ...parsedData,
-            hero: { ...DEFAULT_CONTENT.hero, ...(parsedData.hero || {}) },
-            about: { ...DEFAULT_CONTENT.about, ...(parsedData.about || {}) },
-            contact: { ...DEFAULT_CONTENT.contact, ...(parsedData.contact || {}) },
-            programs: parsedData.programs || DEFAULT_CONTENT.programs,
-            stories: parsedData.stories || DEFAULT_CONTENT.stories,
-            children: parsedData.children || DEFAULT_CONTENT.children,
-            gallery: parsedData.gallery || DEFAULT_CONTENT.gallery,
-          };
-          setContent(mergedLocal);
-        } catch (e) {
-          console.error("Error parsing local content", e);
-        }
-      }
+      // We already loaded from local storage in useState, so we just set loading to false.
       setLoading(false);
       return;
     }
@@ -85,7 +113,7 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
       if (docSnap.exists()) {
         const data = docSnap.data();
         
-        // Deep merge to ensure no undefined errors if DB has partial data
+        // Deep merge logic
         const mergedData: SiteContent = {
             ...DEFAULT_CONTENT,
             ...data,
@@ -98,7 +126,6 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
             gallery: data.gallery || DEFAULT_CONTENT.gallery,
         };
 
-        // Migration helper: If gallery is old string[], convert to MediaItem[] locally to prevent crash
         if (Array.isArray(mergedData.gallery) && mergedData.gallery.length > 0 && typeof mergedData.gallery[0] === 'string') {
            mergedData.gallery = (mergedData.gallery as unknown as string[]).map((url: string, i: number) => ({
              id: `legacy-${i}`,
@@ -112,8 +139,6 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
         setContent(mergedData as SiteContent);
       } else {
         console.log("Document does not exist in Firestore. Using defaults.");
-        // Initialize DB with defaults if needed
-        // setDoc(docRef, INITIAL_CONTENT);
       }
       setLoading(false);
     }, (error) => {
@@ -129,9 +154,11 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
     
     // Optimistic update for UI
     setContent(newContent);
+    
+    // Save to local storage immediately as backup/cache
+    localStorage.setItem('mati_content', JSON.stringify(newContent));
 
     if (isDemoMode) {
-      localStorage.setItem('mati_content', JSON.stringify(newContent));
       return;
     }
 
@@ -144,7 +171,8 @@ export const ContentProvider: React.FC<{ children: ReactNode }> = ({ children })
            await setDoc(docRef, { [section]: data }, { merge: true });
         } else {
            console.error("Failed to update content in Firestore", e);
-           alert("Changes saved locally only (Database connection failed).");
+           // We already saved to local storage, so we don't alert the user aggressively, maybe a toast in future
+           console.log("Changes saved locally only (Database connection failed).");
         }
     }
   };

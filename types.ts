@@ -29,14 +29,6 @@ export interface ChildProfile {
   needsSponsorship: boolean;
 }
 
-export interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  bio: string;
-  image: string;
-}
-
 export interface ContactInfo {
   address: string;
   email: string;
@@ -55,7 +47,20 @@ export interface MediaItem {
   createdAt: string;
 }
 
+export interface GetInvolvedContent {
+    introTitle: string;
+    introText: string;
+    financialText: string;
+    suppliesText: string;
+    volunteerText: string;
+}
+
+export interface SiteTheme {
+    primaryColor: string; // Hex code
+}
+
 export interface SiteContent {
+  theme?: SiteTheme;
   hero: {
     headline: string;
     subheadline: string;
@@ -69,6 +74,7 @@ export interface SiteContent {
     homePreviewImage1?: string;
     homePreviewImage2?: string;
   };
+  getInvolved: GetInvolvedContent;
   contact: ContactInfo;
   programs: Program[];
   stories: Story[];

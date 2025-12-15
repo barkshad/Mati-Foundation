@@ -14,6 +14,9 @@ export const CLOUDINARY_CLOUD_NAME = "dycbotqpw";
 export const CLOUDINARY_UPLOAD_PRESET = "mati_unsigned"; 
 
 export const DEFAULT_CONTENT: SiteContent = {
+  theme: {
+    primaryColor: "#0d9488" // Default Teal-600
+  },
   hero: {
     headline: "Restoring Hope, Building Futures",
     subheadline: "Mati Foundation is an independent, community-driven humanitarian organization in Kilifi, Kenya, dedicated to providing dignity, education, and opportunity to vulnerable children.",
@@ -26,6 +29,13 @@ export const DEFAULT_CONTENT: SiteContent = {
     values: ["Compassion", "Integrity", "Transparency", "Community", "Sustainability"],
     homePreviewImage1: "https://picsum.photos/400/500?random=20",
     homePreviewImage2: "https://picsum.photos/400/500?random=21",
+  },
+  getInvolved: {
+    introTitle: "Get Involved",
+    introText: "Whether you donate funds, supplies, or your time, you are making a tangible difference.",
+    financialText: "100% of your donation goes directly to the children's welfare. We maintain strict transparency and provide receipts for all contributions.",
+    suppliesText: "We are always in need of dry foods, sanitary towels, clothes (ages 4-16), and scholastic materials.",
+    volunteerText: "Are you a teacher, medic, or mentor? We welcome volunteers to spend time with the children."
   },
   contact: {
     address: "P.O. Box 123, Kilifi, Kenya",

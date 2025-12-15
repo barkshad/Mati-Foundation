@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
@@ -14,36 +14,51 @@ import { AdminLogin } from './pages/AdminLogin';
 import { Admin } from './pages/Admin';
 import { AuthProvider } from './contexts/AuthContext';
 import { ContentProvider } from './contexts/ContentContext';
+import { AnimatePresence } from 'framer-motion';
+import { PageTransition } from './components/PageTransition';
+
+// Wrapper component to access useLocation inside HashRouter
+const AnimatedRoutes: React.FC = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<Admin />} />
+        
+        <Route
+          path="*"
+          element={
+            <Layout>
+              <PageTransition>
+                <Routes location={location}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/programs" element={<Programs />} />
+                  <Route path="/programs/:id" element={<ProgramDetail />} />
+                  <Route path="/sponsorship" element={<Sponsorship />} />
+                  <Route path="/get-involved" element={<GetInvolved />} />
+                  <Route path="/stories" element={<Stories />} />
+                  <Route path="/gallery" element={<Gallery />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </PageTransition>
+            </Layout>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <ContentProvider>
         <HashRouter>
-          <Routes>
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<Admin />} />
-            
-            <Route
-              path="*"
-              element={
-                <Layout>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/programs" element={<Programs />} />
-                    <Route path="/programs/:id" element={<ProgramDetail />} />
-                    <Route path="/sponsorship" element={<Sponsorship />} />
-                    <Route path="/get-involved" element={<GetInvolved />} />
-                    <Route path="/stories" element={<Stories />} />
-                    <Route path="/gallery" element={<Gallery />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Layout>
-              }
-            />
-          </Routes>
+          <AnimatedRoutes />
         </HashRouter>
       </ContentProvider>
     </AuthProvider>

@@ -34,14 +34,19 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-        isScrolled || isMobileOpen || !isHome
-          ? 'bg-white/70 backdrop-blur-xl shadow-sm border-b border-white/20 text-slate-800 py-3' 
-          : 'bg-transparent text-white py-6'
+      className={`fixed top-0 w-full z-50 transition-all duration-500 flex justify-center ${
+        isScrolled 
+          ? 'py-4' 
+          : 'py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+      <div className={`
+        w-full max-w-7xl mx-4 sm:mx-6 lg:mx-8 px-6 transition-all duration-500
+        flex justify-between items-center
+        ${isScrolled 
+          ? 'bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-900/5 rounded-full py-3 border border-white/40' 
+          : 'bg-transparent py-2'}
+      `}>
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group relative z-50">
              <motion.div 
@@ -98,7 +103,6 @@ export const Navbar: React.FC = () => {
           >
             {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -110,10 +114,10 @@ export const Navbar: React.FC = () => {
               animate: { opacity: 1, height: 'auto' },
               exit: { opacity: 0, height: 0 },
               transition: { type: "spring", stiffness: 300, damping: 30 },
-              className: "md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 overflow-hidden shadow-xl absolute top-full left-0 w-full"
+              className: "md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 overflow-hidden shadow-xl absolute top-0 left-0 w-full pt-24 pb-8"
             } as any)}
           >
-            <div className="px-6 py-8 space-y-3">
+            <div className="px-6 space-y-3">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.name}

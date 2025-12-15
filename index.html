@@ -40,6 +40,7 @@
             animation: {
               'fade-in': 'fadeIn 0.8s ease-out',
               'float': 'float 6s ease-in-out infinite',
+              'shine': 'shine 1.5s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
@@ -49,6 +50,10 @@
               float: {
                 '0%, 100%': { transform: 'translateY(0)' },
                 '50%': { transform: 'translateY(-10px)' },
+              },
+              shine: {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' }
               }
             }
           }
@@ -56,22 +61,23 @@
       }
     </script>
     <style>
-      /* Custom scrollbar */
+      /* Premium Smooth Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 10px;
       }
       ::-webkit-scrollbar-track {
-        background: #f8fafc;
+        background: #f1f5f9;
       }
       ::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 4px;
+        border-radius: 10px;
+        border: 2px solid #f1f5f9;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+        background: #0d9488;
       }
       
-      /* Noise texture for better glassmorphism */
+      /* Cinematic Noise Texture */
       .bg-noise {
         position: fixed;
         top: 0;
@@ -80,12 +86,18 @@
         height: 100%;
         pointer-events: none;
         z-index: 50;
-        opacity: 0.04;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
       }
       
       .text-balance {
         text-wrap: balance;
+      }
+
+      /* Premium Text Selection */
+      ::selection {
+        background-color: #0d9488;
+        color: #ffffff;
       }
     </style>
   <script type="importmap">
@@ -105,7 +117,7 @@
 }
 </script>
 </head>
-  <body class="bg-gradient-to-br from-slate-50 via-teal-50/30 to-slate-100 text-slate-800 font-sans antialiased selection:bg-teal-600 selection:text-white relative min-h-screen">
+  <body class="bg-slate-50 text-slate-800 font-sans antialiased relative min-h-screen overflow-x-hidden">
     <div class="bg-noise"></div>
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>

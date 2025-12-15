@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
@@ -8,6 +8,8 @@ import { GlassCard } from '../components/GlassCard';
 
 export const Home: React.FC = () => {
   const { content } = useContent();
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
   if (!content || !content.hero) {
     return (
@@ -78,22 +80,27 @@ export const Home: React.FC = () => {
   return (
     <div className="w-full overflow-hidden">
       {/* Hero Section */}
-      <section className="relative h-[95vh] min-h-[700px] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0 bg-slate-900">
-          <motion.img 
-            {...({
-              initial: { scale: 1.2, opacity: 0 },
-              animate: { scale: 1, opacity: 0.9 },
-              transition: { duration: 2.5, ease: "easeOut" }
-            } as any)}
-            src={content.hero.heroImage} 
-            alt="Mati Foundation Children" 
-            className="w-full h-full object-cover"
-          />
+      <section className="relative h-[100vh] min-h-[700px] flex items-center justify-center overflow-hidden">
+        {/* Background Image with Parallax & Overlay */}
+        <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
+          <motion.div 
+            style={{ y: y1 }}
+            className="absolute inset-0 w-full h-[120%]"
+          >
+            <motion.img 
+              {...({
+                initial: { scale: 1.2, opacity: 0 },
+                animate: { scale: 1, opacity: 0.9 },
+                transition: { duration: 1.5, ease: "easeOut" }
+              } as any)}
+              src={content.hero.heroImage} 
+              alt="Mati Foundation Children" 
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
           {/* Refined gradient for better visibility of image and text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-transparent to-slate-900/90"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 via-transparent to-slate-900/50"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-transparent to-slate-950/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/60"></div>
         </div>
 
         {/* Hero Content */}
@@ -106,7 +113,7 @@ export const Home: React.FC = () => {
             } as any)}
           >
             <motion.div {...({ variants: itemVariants } as any)}>
-              <span className="inline-flex items-center gap-2 py-2 px-5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold tracking-[0.2em] uppercase mb-8 backdrop-blur-md shadow-2xl">
+              <span className="inline-flex items-center gap-2 py-2 px-5 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold tracking-[0.2em] uppercase mb-8 backdrop-blur-md shadow-2xl">
                 <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
                 Non-Profit Organization
               </span>
@@ -119,13 +126,13 @@ export const Home: React.FC = () => {
                 initial: "hidden",
                 animate: "visible",
               } as any)}
-              className="font-serif text-5xl sm:text-7xl md:text-8xl font-bold text-white mb-8 leading-[1.1] tracking-tight drop-shadow-xl text-balance"
+              className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-8 leading-[1.05] tracking-tight drop-shadow-xl text-balance"
             >
               {headlineWords.map((word, index) => (
                 <motion.span 
                   key={index} 
                   variants={wordVariants}
-                  className="inline-block mr-[0.2em] last:mr-0"
+                  className="inline-block mr-[0.25em] last:mr-0"
                 >
                   {word}
                 </motion.span>
@@ -143,7 +150,7 @@ export const Home: React.FC = () => {
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/get-involved" 
-                  className="px-10 py-5 bg-teal-600 text-white rounded-full font-bold text-lg shadow-2xl shadow-teal-900/40 flex items-center justify-center gap-3 border border-teal-500/50 hover:bg-teal-500 transition-colors"
+                  className="px-10 py-5 bg-teal-600 text-white rounded-full font-bold text-lg shadow-2xl shadow-teal-900/50 flex items-center justify-center gap-3 border border-teal-500/50 hover:bg-teal-500 transition-colors"
                 >
                   <Heart fill="white" size={20} className="text-white" /> Donate Now
                 </Link>
@@ -151,7 +158,7 @@ export const Home: React.FC = () => {
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
                 <Link 
                   to="/sponsorship" 
-                  className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/30 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                  className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
                 >
                   Sponsor a Child
                 </Link>
@@ -173,7 +180,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Stats Section - Floating Overlap */}
-      <section className="relative -mt-24 z-20 px-4 mb-20">
+      <section className="relative -mt-24 z-20 px-4 mb-32">
         <motion.div 
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6"
           {...({
@@ -190,7 +197,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* About Preview */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-24 relative overflow-hidden">
         {/* Decorative background element */}
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-teal-100/30 rounded-full blur-[120px] pointer-events-none -z-10"></div>
 
@@ -234,7 +241,7 @@ export const Home: React.FC = () => {
                  <img 
                     src={content.about.homePreviewImage1 || "https://picsum.photos/400/500?random=20"} 
                     alt="Children playing" 
-                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover" 
+                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover rotate-[-3deg] hover:rotate-0 transition-transform duration-500" 
                   />
               </motion.div>
 
@@ -251,18 +258,18 @@ export const Home: React.FC = () => {
                  <img 
                     src={content.about.homePreviewImage2 || "https://picsum.photos/400/500?random=21"} 
                     alt="Classroom" 
-                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover" 
+                    className="rounded-[2rem] shadow-2xl w-full h-80 object-cover rotate-[3deg] hover:rotate-0 transition-transform duration-500" 
                   />
               </motion.div>
               
-              <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-orange-400 rounded-full blur-[40px] opacity-60 pointer-events-none"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-orange-400 rounded-full blur-[60px] opacity-40 pointer-events-none"></div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Programs */}
-      <section className="py-32 relative">
+      <section className="py-24 relative bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">What We Do</h4>
@@ -283,16 +290,16 @@ export const Home: React.FC = () => {
               <motion.div key={program.id} {...({ variants: itemVariants } as any)} className="h-full">
                 <Link to={`/programs/${program.id}`} className="block h-full">
                   <GlassCard className="h-full flex flex-col group" hoverEffect={true}>
-                    <div className="h-64 overflow-hidden relative">
+                    <div className="h-72 overflow-hidden relative">
                       <img 
                         src={program.image} 
                         alt={program.title} 
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-80"></div>
-                      <div className="absolute bottom-4 left-4 right-4">
-                         <h3 className="font-serif text-2xl font-bold text-white mb-1 shadow-black drop-shadow-md">{program.title}</h3>
-                         <div className="h-1 w-12 bg-teal-400 rounded-full group-hover:w-20 transition-all duration-500"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-90"></div>
+                      <div className="absolute bottom-6 left-6 right-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                         <h3 className="font-serif text-2xl font-bold text-white mb-2 shadow-black drop-shadow-md leading-tight">{program.title}</h3>
+                         <div className="h-1 w-0 bg-teal-400 rounded-full group-hover:w-full transition-all duration-700 ease-out"></div>
                       </div>
                     </div>
                     <div className="p-8 flex flex-col flex-grow bg-white/40">
@@ -312,7 +319,7 @@ export const Home: React.FC = () => {
           </motion.div>
           
           <div className="text-center mt-20">
-            <Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-slate-100 rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200">
+            <Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-white rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200 shadow-sm">
               View All Programs <ArrowRight size={16} />
             </Link>
           </div>

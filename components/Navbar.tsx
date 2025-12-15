@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { Menu, X, Heart } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const location = useLocation();
+  const location = ReactRouterDOM.useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
           : 'bg-transparent py-2'}
       `}>
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group relative z-50">
+          <ReactRouterDOM.Link to="/" className="flex items-center gap-3 group relative z-50">
              <motion.div 
                className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-teal-900/10 border border-white/20"
                {...({
@@ -61,12 +61,12 @@ export const Navbar: React.FC = () => {
              <span className={`font-serif text-2xl font-bold tracking-tight ${isScrolled || isMobileOpen || !isHome ? 'text-slate-900' : 'text-white'}`}>
                Mati<span className="text-teal-500">.</span>
              </span>
-          </Link>
+          </ReactRouterDOM.Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => (
-              <Link
+              <ReactRouterDOM.Link
                 key={link.name}
                 to={link.path}
                 className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-full ${
@@ -76,7 +76,7 @@ export const Navbar: React.FC = () => {
                 }`}
               >
                 {link.name}
-              </Link>
+              </ReactRouterDOM.Link>
             ))}
             <motion.div
               className="ml-4"
@@ -86,13 +86,13 @@ export const Navbar: React.FC = () => {
                 transition: { type: "spring", stiffness: 400, damping: 15 }
               } as any)}
             >
-              <Link
+              <ReactRouterDOM.Link
                 to="/get-involved"
                 className="px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center gap-2 border border-slate-700"
               >
                 <Heart size={16} fill="currentColor" className="text-teal-400" />
                 <span>Donate</span>
-              </Link>
+              </ReactRouterDOM.Link>
             </motion.div>
           </nav>
 
@@ -127,7 +127,7 @@ export const Navbar: React.FC = () => {
                     transition: { delay: i * 0.05 }
                   } as any)}
                 >
-                  <Link
+                  <ReactRouterDOM.Link
                     to={link.path}
                     className={`block px-4 py-4 rounded-2xl text-lg font-medium transition-colors ${
                       location.pathname === link.path 
@@ -137,7 +137,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setIsMobileOpen(false)}
                   >
                     {link.name}
-                  </Link>
+                  </ReactRouterDOM.Link>
                 </motion.div>
               ))}
               <motion.div 
@@ -148,13 +148,13 @@ export const Navbar: React.FC = () => {
                   transition: { delay: 0.3 }
                 } as any)}
               >
-                <Link
+                <ReactRouterDOM.Link
                   to="/get-involved"
                   className="block text-center w-full px-5 py-4 rounded-2xl bg-slate-900 text-white font-bold shadow-xl active:scale-95 transition-transform"
                   onClick={() => setIsMobileOpen(false)}
                 >
                   Donate Now
-                </Link>
+                </ReactRouterDOM.Link>
               </motion.div>
             </div>
           </motion.div>

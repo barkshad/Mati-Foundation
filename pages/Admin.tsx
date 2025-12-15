@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useContent } from '../contexts/ContentContext';
-import { Navigate } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
   Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Film, Menu, X, ChevronLeft, Lock, Palette, FileText, Globe
@@ -54,7 +54,7 @@ export const Admin: React.FC = () => {
   }, [activeTab]);
 
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" />;
+    return <ReactRouterDOM.Navigate to="/admin/login" />;
   }
 
   // --- Handlers ---

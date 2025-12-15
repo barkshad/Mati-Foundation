@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock, ArrowRight, MessageCircle } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
 
@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
               {content.about.mission}
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="#" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Facebook size={18} /></a>
+              <a href="https://www.facebook.com/profile.php?id=61585230359217" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Facebook size={18} /></a>
               <a href="#" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Instagram size={18} /></a>
             </div>
           </div>
@@ -31,10 +31,10 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-white font-bold mb-6 uppercase text-xs tracking-[0.1em]">Quick Links</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/about" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> About Us</Link></li>
-              <li><Link to="/programs" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Our Programs</Link></li>
-              <li><Link to="/sponsorship" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Sponsor a Child</Link></li>
-              <li><Link to="/stories" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Impact Stories</Link></li>
+              <li><ReactRouterDOM.Link to="/about" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> About Us</ReactRouterDOM.Link></li>
+              <li><ReactRouterDOM.Link to="/programs" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Our Programs</ReactRouterDOM.Link></li>
+              <li><ReactRouterDOM.Link to="/sponsorship" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Sponsor a Child</ReactRouterDOM.Link></li>
+              <li><ReactRouterDOM.Link to="/stories" className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-[1px] bg-teal-500 transition-all"></span> Impact Stories</ReactRouterDOM.Link></li>
             </ul>
           </div>
 
@@ -85,10 +85,10 @@ export const Footer: React.FC = () => {
         <div className="border-t border-slate-900 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
           <p>&copy; {year} Mati Foundation. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-4 md:mt-0">
-            <Link to="/admin" className="flex items-center gap-2 hover:text-white transition-colors opacity-40 hover:opacity-100">
+            <ReactRouterDOM.Link to="/admin" className="flex items-center gap-2 hover:text-white transition-colors opacity-40 hover:opacity-100">
               <Lock size={12} />
               <span>Staff Login</span>
-            </Link>
+            </ReactRouterDOM.Link>
             <div className="flex items-center gap-1.5 opacity-60">
                <span>Made with</span>
                <Heart size={12} className="text-teal-600 fill-teal-600" />

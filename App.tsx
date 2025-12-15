@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
@@ -19,36 +19,36 @@ import { PageTransition } from './components/PageTransition';
 
 // Wrapper component to access useLocation inside HashRouter
 const AnimatedRoutes: React.FC = () => {
-  const location = useLocation();
+  const location = ReactRouterDOM.useLocation();
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<Admin />} />
+      <ReactRouterDOM.Routes location={location} key={location.pathname}>
+        <ReactRouterDOM.Route path="/admin/login" element={<AdminLogin />} />
+        <ReactRouterDOM.Route path="/admin" element={<Admin />} />
         
-        <Route
+        <ReactRouterDOM.Route
           path="*"
           element={
             <Layout>
               <PageTransition>
-                <Routes location={location}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/programs" element={<Programs />} />
-                  <Route path="/programs/:id" element={<ProgramDetail />} />
-                  <Route path="/sponsorship" element={<Sponsorship />} />
-                  <Route path="/get-involved" element={<GetInvolved />} />
-                  <Route path="/stories" element={<Stories />} />
-                  <Route path="/gallery" element={<Gallery />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                <ReactRouterDOM.Routes location={location}>
+                  <ReactRouterDOM.Route path="/" element={<Home />} />
+                  <ReactRouterDOM.Route path="/about" element={<About />} />
+                  <ReactRouterDOM.Route path="/programs" element={<Programs />} />
+                  <ReactRouterDOM.Route path="/programs/:id" element={<ProgramDetail />} />
+                  <ReactRouterDOM.Route path="/sponsorship" element={<Sponsorship />} />
+                  <ReactRouterDOM.Route path="/get-involved" element={<GetInvolved />} />
+                  <ReactRouterDOM.Route path="/stories" element={<Stories />} />
+                  <ReactRouterDOM.Route path="/gallery" element={<Gallery />} />
+                  <ReactRouterDOM.Route path="/contact" element={<Contact />} />
+                  <ReactRouterDOM.Route path="*" element={<ReactRouterDOM.Navigate to="/" replace />} />
+                </ReactRouterDOM.Routes>
               </PageTransition>
             </Layout>
           }
         />
-      </Routes>
+      </ReactRouterDOM.Routes>
     </AnimatePresence>
   );
 };
@@ -57,9 +57,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <ContentProvider>
-        <HashRouter>
+        <ReactRouterDOM.HashRouter>
           <AnimatedRoutes />
-        </HashRouter>
+        </ReactRouterDOM.HashRouter>
       </ContentProvider>
     </AuthProvider>
   );

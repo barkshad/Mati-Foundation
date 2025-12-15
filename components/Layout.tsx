@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { useContent } from '../contexts/ContentContext';
@@ -42,7 +42,7 @@ const generatePalette = (hex: string) => {
 };
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const location = useLocation();
+  const location = ReactRouterDOM.useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
   const { loading, content } = useContent();
 

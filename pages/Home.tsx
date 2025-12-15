@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { ArrowRight, Heart } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
 import { AnimatedCounter } from '../components/AnimatedCounter';
@@ -148,20 +148,20 @@ export const Home: React.FC = () => {
             
             <motion.div {...({ variants: itemVariants } as any)} className="flex flex-col sm:flex-row gap-5 justify-center">
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
-                <Link 
+                <ReactRouterDOM.Link 
                   to="/get-involved" 
                   className="px-10 py-5 bg-teal-600 text-white rounded-full font-bold text-lg shadow-2xl shadow-teal-900/50 flex items-center justify-center gap-3 border border-teal-500/50 hover:bg-teal-500 transition-colors"
                 >
                   <Heart fill="white" size={20} className="text-white" /> Donate Now
-                </Link>
+                </ReactRouterDOM.Link>
               </motion.div>
               <motion.div {...({ whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 }, transition: { type: "spring", stiffness: 400, damping: 15 } } as any)}>
-                <Link 
+                <ReactRouterDOM.Link 
                   to="/sponsorship" 
                   className="px-10 py-5 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-full font-bold text-lg flex items-center justify-center hover:bg-white/20 transition-colors"
                 >
                   Sponsor a Child
-                </Link>
+                </ReactRouterDOM.Link>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -219,12 +219,12 @@ export const Home: React.FC = () => {
               <p className="text-slate-600 text-xl leading-relaxed mb-10 font-light">
                 {content.about.founderStory.substring(0, 300)}...
               </p>
-              <Link to="/about" className="group text-slate-900 font-bold flex items-center gap-3 text-lg transition-all">
+              <ReactRouterDOM.Link to="/about" className="group text-slate-900 font-bold flex items-center gap-3 text-lg transition-all">
                 <span className="border-b-2 border-slate-200 group-hover:border-teal-600 transition-colors pb-1">Read our full story</span> 
                 <span className="p-2 bg-slate-100 rounded-full group-hover:bg-teal-600 group-hover:text-white transition-all">
                     <ArrowRight size={16} />
                 </span>
-              </Link>
+              </ReactRouterDOM.Link>
             </motion.div>
             
             <div className="lg:w-1/2 grid grid-cols-2 gap-6 relative">
@@ -288,7 +288,7 @@ export const Home: React.FC = () => {
           >
             {content.programs.slice(0, 4).map((program) => (
               <motion.div key={program.id} {...({ variants: itemVariants } as any)} className="h-full">
-                <Link to={`/programs/${program.id}`} className="block h-full">
+                <ReactRouterDOM.Link to={`/programs/${program.id}`} className="block h-full">
                   <GlassCard className="h-full flex flex-col group" hoverEffect={true}>
                     <div className="h-72 overflow-hidden relative">
                       <img 
@@ -313,15 +313,15 @@ export const Home: React.FC = () => {
                       </div>
                     </div>
                   </GlassCard>
-                </Link>
+                </ReactRouterDOM.Link>
               </motion.div>
             ))}
           </motion.div>
           
           <div className="text-center mt-20">
-            <Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-white rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200 shadow-sm">
+            <ReactRouterDOM.Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-white rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200 shadow-sm">
               View All Programs <ArrowRight size={16} />
-            </Link>
+            </ReactRouterDOM.Link>
           </div>
         </div>
       </section>

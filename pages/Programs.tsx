@@ -2,7 +2,7 @@ import React from 'react';
 import { useContent } from '../contexts/ContentContext';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 
 export const Programs: React.FC = () => {
   const { content } = useContent();
@@ -17,7 +17,7 @@ export const Programs: React.FC = () => {
 
         <div className="space-y-12">
           {content.programs.map((program, index) => (
-            <Link 
+            <ReactRouterDOM.Link 
               to={`/programs/${program.id}`}
               key={program.id}
               className="block group"
@@ -53,7 +53,7 @@ export const Programs: React.FC = () => {
                   </div>
                 </div>
               </motion.div>
-            </Link>
+            </ReactRouterDOM.Link>
           ))}
         </div>
       </div>

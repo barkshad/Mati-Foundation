@@ -1,18 +1,18 @@
 import React from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import * as ReactRouterDOM from 'react-router-dom';
 import { useContent } from '../contexts/ContentContext';
 import { ArrowLeft, Heart, CheckCircle, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export const ProgramDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = ReactRouterDOM.useParams<{ id: string }>();
   const { content } = useContent();
   
   // Find program by ID
   const program = content.programs.find(p => p.id === id);
 
   if (!program) {
-    return <Navigate to="/programs" replace />;
+    return <ReactRouterDOM.Navigate to="/programs" replace />;
   }
 
   return (
@@ -38,9 +38,9 @@ export const ProgramDetail: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-full p-8 md:p-12">
            <div className="max-w-7xl mx-auto">
-             <Link to="/programs" className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors font-bold text-sm uppercase tracking-wider">
+             <ReactRouterDOM.Link to="/programs" className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors font-bold text-sm uppercase tracking-wider">
                <ArrowLeft size={16} className="mr-2" /> Back to Programs
-             </Link>
+             </ReactRouterDOM.Link>
              <motion.h1 
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
@@ -93,13 +93,13 @@ export const ProgramDetail: React.FC = () => {
                     Your contribution directly supports the {program.title} initiative. Help us reach more children today.
                   </p>
                   
-                  <Link 
+                  <ReactRouterDOM.Link 
                     to="/get-involved"
                     className="w-full py-4 bg-teal-600 text-white rounded-xl font-bold text-lg hover:bg-teal-700 transition-all shadow-lg shadow-teal-500/30 flex items-center justify-center gap-2 group mb-6 active:scale-95"
                   >
                     <Heart className="fill-white/20 group-hover:fill-white transition-colors" />
                     Support Program
-                  </Link>
+                  </ReactRouterDOM.Link>
 
                   <div className="space-y-4 pt-6 border-t border-slate-100">
                     <div className="flex items-center gap-3 text-sm text-slate-600">

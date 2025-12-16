@@ -17,39 +17,27 @@ import { ContentProvider } from './contexts/ContentContext';
 import { AnimatePresence } from 'framer-motion';
 import { PageTransition } from './components/PageTransition';
 
-// Wrapper component to access useLocation inside HashRouter
-const AnimatedRoutes: React.FC = () => {
+// Define public routes wrapped in Layout and Transitions
+const PublicRoutes: React.FC = () => {
   const location = ReactRouterDOM.useLocation();
-
+  
   return (
-    <AnimatePresence mode="wait">
-      <ReactRouterDOM.Routes location={location} key={location.pathname}>
-        <ReactRouterDOM.Route path="/admin/login" element={<AdminLogin />} />
-        <ReactRouterDOM.Route path="/admin" element={<Admin />} />
-        
-        <ReactRouterDOM.Route
-          path="*"
-          element={
-            <Layout>
-              <PageTransition>
-                <ReactRouterDOM.Routes location={location}>
-                  <ReactRouterDOM.Route path="/" element={<Home />} />
-                  <ReactRouterDOM.Route path="/about" element={<About />} />
-                  <ReactRouterDOM.Route path="/programs" element={<Programs />} />
-                  <ReactRouterDOM.Route path="/programs/:id" element={<ProgramDetail />} />
-                  <ReactRouterDOM.Route path="/sponsorship" element={<Sponsorship />} />
-                  <ReactRouterDOM.Route path="/get-involved" element={<GetInvolved />} />
-                  <ReactRouterDOM.Route path="/stories" element={<Stories />} />
-                  <ReactRouterDOM.Route path="/gallery" element={<Gallery />} />
-                  <ReactRouterDOM.Route path="/contact" element={<Contact />} />
-                  <ReactRouterDOM.Route path="*" element={<ReactRouterDOM.Navigate to="/" replace />} />
-                </ReactRouterDOM.Routes>
-              </PageTransition>
-            </Layout>
-          }
-        />
-      </ReactRouterDOM.Routes>
-    </AnimatePresence>
+    <Layout>
+      <AnimatePresence mode="wait">
+        <ReactRouterDOM.Routes location={location} key={location.pathname}>
+          <ReactRouterDOM.Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <ReactRouterDOM.Route path="/about" element={<PageTransition><About /></PageTransition>} />
+          <ReactRouterDOM.Route path="/programs" element={<PageTransition><Programs /></PageTransition>} />
+          <ReactRouterDOM.Route path="/programs/:id" element={<PageTransition><ProgramDetail /></PageTransition>} />
+          <ReactRouterDOM.Route path="/sponsorship" element={<PageTransition><Sponsorship /></PageTransition>} />
+          <ReactRouterDOM.Route path="/get-involved" element={<PageTransition><GetInvolved /></PageTransition>} />
+          <ReactRouterDOM.Route path="/stories" element={<PageTransition><Stories /></PageTransition>} />
+          <ReactRouterDOM.Route path="/gallery" element={<PageTransition><Gallery /></PageTransition>} />
+          <ReactRouterDOM.Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <ReactRouterDOM.Route path="*" element={<ReactRouterDOM.Navigate to="/" replace />} />
+        </ReactRouterDOM.Routes>
+      </AnimatePresence>
+    </Layout>
   );
 };
 
@@ -58,7 +46,14 @@ const App: React.FC = () => {
     <AuthProvider>
       <ContentProvider>
         <ReactRouterDOM.HashRouter>
-          <AnimatedRoutes />
+          <ReactRouterDOM.Routes>
+            {/* Admin Routes - No Transition Wrapper, No Public Layout */}
+            <ReactRouterDOM.Route path="/admin/login" element={<AdminLogin />} />
+            <ReactRouterDOM.Route path="/admin" element={<Admin />} />
+            
+            {/* Catch-all for Public Routes */}
+            <ReactRouterDOM.Route path="*" element={<PublicRoutes />} />
+          </ReactRouterDOM.Routes>
         </ReactRouterDOM.HashRouter>
       </ContentProvider>
     </AuthProvider>

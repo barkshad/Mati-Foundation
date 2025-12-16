@@ -13,7 +13,7 @@ export const Home: React.FC = () => {
 
   if (!content || !content.hero) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-teal-50">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="flex flex-col items-center gap-4">
            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
            <p className="text-teal-800 font-bold animate-pulse">Loading content...</p>
@@ -78,7 +78,7 @@ export const Home: React.FC = () => {
   const headlineWords = content.hero.headline.split(" ");
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full overflow-hidden bg-transparent">
       {/* Hero Section */}
       <section className="relative h-[100vh] min-h-[700px] flex items-center justify-center overflow-hidden">
         {/* Background Image with Parallax & Overlay */}
@@ -198,7 +198,7 @@ export const Home: React.FC = () => {
 
       {/* About Preview */}
       <section className="py-24 relative overflow-hidden">
-        {/* Decorative background element */}
+        {/* Decorative background element - now redundant with global ambient, but kept for localized intensity */}
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-teal-100/30 rounded-full blur-[120px] pointer-events-none -z-10"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -269,7 +269,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Featured Programs */}
-      <section className="py-24 relative bg-slate-50">
+      <section className="py-24 relative bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">What We Do</h4>
@@ -319,7 +319,7 @@ export const Home: React.FC = () => {
           </motion.div>
           
           <div className="text-center mt-20">
-            <ReactRouterDOM.Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-white rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-slate-200 shadow-sm">
+            <ReactRouterDOM.Link to="/programs" className="inline-flex items-center gap-3 px-8 py-4 bg-white/80 backdrop-blur-md rounded-full text-slate-900 font-bold hover:bg-slate-900 hover:text-white transition-all hover:shadow-xl border border-white shadow-sm">
               View All Programs <ArrowRight size={16} />
             </ReactRouterDOM.Link>
           </div>

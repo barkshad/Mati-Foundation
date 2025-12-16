@@ -68,9 +68,17 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-teal-50">
+    <div className="min-h-screen flex flex-col font-sans text-slate-800 bg-slate-50 relative z-0">
+      
+      {/* Ambient Background - Moving Orbs for Glassmorphism Depth */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-slate-50">
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-teal-200/20 rounded-full blur-[120px] animate-float" style={{ animationDuration: '15s' }}></div>
+          <div className="absolute top-[30%] right-[-5%] w-[40%] h-[40%] bg-purple-200/20 rounded-full blur-[100px] animate-float" style={{ animationDuration: '20s', animationDelay: '2s' }}></div>
+          <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] bg-blue-100/30 rounded-full blur-[140px] animate-float" style={{ animationDuration: '18s', animationDelay: '5s' }}></div>
+      </div>
+
       {!isAdmin && <Navbar />}
-      <main className={`flex-grow ${!isAdmin ? 'pt-0' : ''}`}>
+      <main className={`flex-grow ${!isAdmin ? 'pt-0' : ''} relative z-10`}>
         {children}
       </main>
       {!isAdmin && <Footer />}

@@ -4,7 +4,7 @@ import { useContent } from '../contexts/ContentContext';
 import * as ReactRouterDOM from 'react-router-dom';
 import { 
   Layout, Type, Image as ImageIcon, Users, Settings, LogOut, Save, 
-  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Film, Menu, X, ChevronLeft, Lock, Palette, FileText, Globe
+  Plus, Trash2, Edit2, ExternalLink, Heart, BookOpen, Film, Menu, X, ChevronLeft, Lock, Palette, FileText, Globe, Facebook, Instagram, Linkedin, Twitter
 } from 'lucide-react';
 import { ImageUploader } from '../components/ImageUploader';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -31,6 +31,7 @@ export const Admin: React.FC = () => {
 
   // Page Form States
   const [heroData, setHeroData] = useState(content.hero);
+  const [homePageData, setHomePageData] = useState(content.homePage || { stats: [], aboutPreviewTitle: '', aboutPreviewHeadline: '', programsTitle: '', programsSubtitle: '' });
   const [aboutData, setAboutData] = useState(content.about);
   const [getInvolvedData, setGetInvolvedData] = useState(content.getInvolved);
   const [contactData, setContactData] = useState(content.contact);
@@ -41,6 +42,17 @@ export const Admin: React.FC = () => {
   useEffect(() => {
     if (content) {
       setHeroData(content.hero);
+      setHomePageData(content.homePage || { 
+          stats: [
+              { id: '1', value: 150, suffix: '+', label: 'Children' },
+              { id: '2', value: 500, suffix: '+', label: 'Meals' },
+              { id: '3', value: 30, suffix: '', label: 'Families' }
+          ], 
+          aboutPreviewTitle: 'Our Story', 
+          aboutPreviewHeadline: 'A Legacy of Compassion',
+          programsTitle: 'Our Core Programs',
+          programsSubtitle: 'Holistic interventions designed to break the cycle of poverty.'
+      });
       setAboutData(content.about);
       setGetInvolvedData(content.getInvolved || { introTitle: '', introText: '', financialText: '', suppliesText: '', volunteerText: '' });
       setContactData(content.contact);
@@ -61,7 +73,12 @@ export const Admin: React.FC = () => {
 
   const handleSaveHero = async () => {
     await updateContent('hero', heroData);
-    alert('Homepage updated successfully!');
+    alert('Homepage Hero updated successfully!');
+  };
+
+  const handleSaveHomePage = async () => {
+    await updateContent('homePage', homePageData);
+    alert('Home Page Content updated successfully!');
   };
 
   const handleSaveAbout = async () => {
@@ -149,6 +166,21 @@ export const Admin: React.FC = () => {
     if(!window.confirm("Delete this media item?")) return;
     const newGallery = content.gallery.filter(item => item.id !== id);
     await updateContent('gallery', newGallery);
+  };
+
+  const handleAddStat = () => {
+      const newStats = [...homePageData.stats, { id: generateId(), value: 0, suffix: '+', label: 'New Stat' }];
+      setHomePageData({...homePageData, stats: newStats});
+  };
+  
+  const handleRemoveStat = (id: string) => {
+      const newStats = homePageData.stats.filter(s => s.id !== id);
+      setHomePageData({...homePageData, stats: newStats});
+  };
+
+  const handleStatChange = (id: string, field: string, value: any) => {
+      const newStats = homePageData.stats.map(s => s.id === id ? { ...s, [field]: value } : s);
+      setHomePageData({...homePageData, stats: newStats});
   };
 
   // Mock Data
@@ -366,7 +398,8 @@ export const Admin: React.FC = () => {
 
             {/* HOMEPAGE TAB */}
             {activeTab === 'homepage' && (
-              <div className="space-y-6 max-w-3xl mx-auto md:mx-0">
+              <div className="space-y-8 max-w-4xl mx-auto md:mx-0">
+                {/* Hero Section */}
                 <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
                   <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                      <Type className="text-teal-600" /> Hero Section
@@ -394,8 +427,67 @@ export const Admin: React.FC = () => {
                       <ImageUploader onUploadComplete={(data) => setHeroData({...heroData, heroImage: data.url})} label="" />
                       {heroData.heroImage && <img src={heroData.heroImage} className="w-full h-48 object-cover rounded-lg mt-2" />}
                     </div>
-                    <button onClick={handleSaveHero} className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 shadow-lg">Save Changes</button>
+                    <button onClick={handleSaveHero} className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 shadow-lg">Save Hero Changes</button>
                   </div>
+                </div>
+
+                {/* Impact Stats */}
+                <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                   <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-xl font-bold text-slate-800">Impact Statistics</h2>
+                      <button onClick={handleAddStat} className="flex items-center gap-2 text-sm text-teal-600 font-bold hover:bg-teal-50 px-3 py-2 rounded-lg transition-colors"><Plus size={16}/> Add Stat</button>
+                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                       {homePageData.stats.map((stat, idx) => (
+                           <div key={stat.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl relative group">
+                               <button onClick={() => handleRemoveStat(stat.id)} className="absolute top-2 right-2 text-slate-400 hover:text-red-500"><Trash2 size={16}/></button>
+                               <div className="space-y-3">
+                                   <div>
+                                       <label className="text-[10px] uppercase font-bold text-slate-500">Value</label>
+                                       <input type="number" className="w-full p-2 rounded border bg-white" value={stat.value} onChange={(e) => handleStatChange(stat.id, 'value', parseInt(e.target.value))} />
+                                   </div>
+                                   <div>
+                                       <label className="text-[10px] uppercase font-bold text-slate-500">Suffix</label>
+                                       <input type="text" className="w-full p-2 rounded border bg-white" value={stat.suffix} onChange={(e) => handleStatChange(stat.id, 'suffix', e.target.value)} />
+                                   </div>
+                                   <div>
+                                       <label className="text-[10px] uppercase font-bold text-slate-500">Label</label>
+                                       <input type="text" className="w-full p-2 rounded border bg-white" value={stat.label} onChange={(e) => handleStatChange(stat.id, 'label', e.target.value)} />
+                                   </div>
+                               </div>
+                           </div>
+                       ))}
+                   </div>
+                </div>
+
+                {/* Section Titles */}
+                <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-800 mb-6">Page Section Text</h2>
+                    <div className="space-y-6">
+                         <div className="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">About Section Title</label>
+                                <input className="w-full p-3 border rounded-xl" value={homePageData.aboutPreviewTitle} onChange={(e) => setHomePageData({...homePageData, aboutPreviewTitle: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">About Section Headline</label>
+                                <input className="w-full p-3 border rounded-xl" value={homePageData.aboutPreviewHeadline} onChange={(e) => setHomePageData({...homePageData, aboutPreviewHeadline: e.target.value})} />
+                            </div>
+                         </div>
+                         <div className="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Programs Section Title</label>
+                                <input className="w-full p-3 border rounded-xl" value={homePageData.programsTitle} onChange={(e) => setHomePageData({...homePageData, programsTitle: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Programs Section Subtitle</label>
+                                <input className="w-full p-3 border rounded-xl" value={homePageData.programsSubtitle} onChange={(e) => setHomePageData({...homePageData, programsSubtitle: e.target.value})} />
+                            </div>
+                         </div>
+                    </div>
+                    <div className="mt-8">
+                        <button onClick={handleSaveHomePage} className="w-full py-4 bg-teal-600 text-white rounded-xl font-bold hover:bg-teal-700 shadow-lg">Save Home Page Content</button>
+                    </div>
                 </div>
               </div>
             )}
@@ -421,6 +513,23 @@ export const Admin: React.FC = () => {
                         <h2 className="text-xl font-bold text-slate-800 mb-6">Founder's Story</h2>
                         <div className="space-y-6">
                             <textarea className="w-full p-4 border rounded-xl h-64 font-sans text-base leading-relaxed" value={aboutData.founderStory} onChange={e => setAboutData({...aboutData, founderStory: e.target.value})} />
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h2 className="text-xl font-bold text-slate-800 mb-6">Home Page Preview Images</h2>
+                        <p className="text-sm text-slate-500 mb-4">These images appear in the "Our Story" section on the Home Page.</p>
+                        <div className="grid md:grid-cols-2 gap-6">
+                             <div className="p-4 bg-slate-50 rounded-xl border">
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-3">Left Image (Rotated -3deg)</label>
+                                <ImageUploader onUploadComplete={data => setAboutData({...aboutData, homePreviewImage1: data.url})} label="" />
+                                {aboutData.homePreviewImage1 && <img src={aboutData.homePreviewImage1} className="w-full h-40 object-cover rounded-lg mt-2" />}
+                             </div>
+                             <div className="p-4 bg-slate-50 rounded-xl border">
+                                <label className="block text-xs font-bold text-slate-500 uppercase mb-3">Right Image (Rotated +3deg)</label>
+                                <ImageUploader onUploadComplete={data => setAboutData({...aboutData, homePreviewImage2: data.url})} label="" />
+                                {aboutData.homePreviewImage2 && <img src={aboutData.homePreviewImage2} className="w-full h-40 object-cover rounded-lg mt-2" />}
+                             </div>
                         </div>
                     </div>
 
@@ -484,63 +593,109 @@ export const Admin: React.FC = () => {
             {/* CONTACT PAGE TAB (Merged Contact Info) */}
             {activeTab === 'contact_page' && (
                 <div className="max-w-2xl mx-auto md:mx-0 bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
-                    <h2 className="text-xl font-bold mb-6">Contact & Payment Information</h2>
+                    <h2 className="text-xl font-bold mb-6 text-slate-800">Contact & Payment Information</h2>
                     <div className="space-y-5">
                         <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Address</label>
-                        <input 
-                            className="w-full p-4 border rounded-xl text-base" 
-                            value={contactData.address} 
-                            onChange={(e) => setContactData({...contactData, address: e.target.value})}
-                        />
+                            <label className="text-xs font-bold text-slate-500 uppercase">Address</label>
+                            <input 
+                                className="w-full p-4 border rounded-xl text-base" 
+                                value={contactData.address} 
+                                onChange={(e) => setContactData({...contactData, address: e.target.value})}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-500 uppercase">Email</label>
+                                <input 
+                                    className="w-full p-4 border rounded-xl text-base" 
+                                    value={contactData.email} 
+                                    onChange={(e) => setContactData({...contactData, email: e.target.value})}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
+                                <input 
+                                    className="w-full p-4 border rounded-xl text-base" 
+                                    value={contactData.phone}
+                                    onChange={(e) => setContactData({...contactData, phone: e.target.value})}
+                                />
+                            </div>
                         </div>
                         <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Email</label>
-                        <input 
-                            className="w-full p-4 border rounded-xl text-base" 
-                            value={contactData.email} 
-                            onChange={(e) => setContactData({...contactData, email: e.target.value})}
-                        />
+                            <label className="text-xs font-bold text-slate-500 uppercase">WhatsApp</label>
+                            <input 
+                                className="w-full p-4 border rounded-xl text-base" 
+                                value={contactData.whatsapp}
+                                onChange={(e) => setContactData({...contactData, whatsapp: e.target.value})}
+                            />
                         </div>
-                        <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Phone</label>
-                        <input 
-                            className="w-full p-4 border rounded-xl text-base" 
-                            value={contactData.phone}
-                            onChange={(e) => setContactData({...contactData, phone: e.target.value})}
-                        />
+
+                        {/* Social Media Section */}
+                        <div className="pt-6 border-t space-y-4">
+                            <h3 className="font-bold text-slate-700 flex items-center gap-2"><Globe size={18}/> Social Media Links</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><Facebook size={12}/> Facebook</label>
+                                    <input 
+                                        className="w-full p-3 border rounded-xl text-sm" 
+                                        value={contactData.socials?.facebook || ''}
+                                        onChange={(e) => setContactData({...contactData, socials: {...(contactData.socials || { facebook: '', instagram: '', twitter: '', linkedin: '' }), facebook: e.target.value}})}
+                                        placeholder="https://facebook.com/..."
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><Instagram size={12}/> Instagram</label>
+                                    <input 
+                                        className="w-full p-3 border rounded-xl text-sm" 
+                                        value={contactData.socials?.instagram || ''}
+                                        onChange={(e) => setContactData({...contactData, socials: {...(contactData.socials || { facebook: '', instagram: '', twitter: '', linkedin: '' }), instagram: e.target.value}})}
+                                        placeholder="https://instagram.com/..."
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><Twitter size={12}/> Twitter / X</label>
+                                    <input 
+                                        className="w-full p-3 border rounded-xl text-sm" 
+                                        value={contactData.socials?.twitter || ''}
+                                        onChange={(e) => setContactData({...contactData, socials: {...(contactData.socials || { facebook: '', instagram: '', twitter: '', linkedin: '' }), twitter: e.target.value}})}
+                                        placeholder="https://twitter.com/..."
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><Linkedin size={12}/> LinkedIn</label>
+                                    <input 
+                                        className="w-full p-3 border rounded-xl text-sm" 
+                                        value={contactData.socials?.linkedin || ''}
+                                        onChange={(e) => setContactData({...contactData, socials: {...(contactData.socials || { facebook: '', instagram: '', twitter: '', linkedin: '' }), linkedin: e.target.value}})}
+                                        placeholder="https://linkedin.com/..."
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">WhatsApp</label>
-                        <input 
-                            className="w-full p-4 border rounded-xl text-base" 
-                            value={contactData.whatsapp}
-                            onChange={(e) => setContactData({...contactData, whatsapp: e.target.value})}
-                        />
-                        </div>
+
                         <div className="pt-6 border-t space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Bank Details (Displayed in Get Involved)</label>
-                        <textarea 
-                            className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" 
-                            value={contactData.bankDetails}
-                            onChange={(e) => setContactData({...contactData, bankDetails: e.target.value})}
-                        />
+                            <label className="text-xs font-bold text-slate-500 uppercase">Bank Details</label>
+                            <textarea 
+                                className="w-full p-4 border rounded-xl h-24 font-mono text-sm leading-relaxed" 
+                                value={contactData.bankDetails}
+                                onChange={(e) => setContactData({...contactData, bankDetails: e.target.value})}
+                            />
                         </div>
                         <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">M-Pesa (Displayed in Get Involved)</label>
-                        <input 
-                            className="w-full p-4 border rounded-xl font-mono text-sm" 
-                            value={contactData.mpesa}
-                            onChange={(e) => setContactData({...contactData, mpesa: e.target.value})}
-                        />
+                            <label className="text-xs font-bold text-slate-500 uppercase">M-Pesa</label>
+                            <input 
+                                className="w-full p-4 border rounded-xl font-mono text-sm" 
+                                value={contactData.mpesa}
+                                onChange={(e) => setContactData({...contactData, mpesa: e.target.value})}
+                            />
                         </div>
                         <div className="pt-4">
-                        <button 
-                            onClick={handleSaveContact}
-                            className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
-                        >
-                            Save Information
-                        </button>
+                            <button 
+                                onClick={handleSaveContact}
+                                className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 text-lg shadow-lg"
+                            >
+                                Save Information
+                            </button>
                         </div>
                     </div>
                 </div>

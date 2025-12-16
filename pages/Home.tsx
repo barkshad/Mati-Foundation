@@ -11,6 +11,19 @@ export const Home: React.FC = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
+  // Fallback defaults in case homePage config is missing in old data
+  const stats = content.homePage?.stats || [
+      { id: '1', value: 150, suffix: '+', label: 'Children Educated' },
+      { id: '2', value: 500, suffix: '+', label: 'Meals Served Weekly' },
+      { id: '3', value: 30, suffix: '', label: 'Families Empowered' }
+  ];
+  
+  const aboutPreviewTitle = content.homePage?.aboutPreviewTitle || "Our Story";
+  const aboutPreviewHeadline = content.homePage?.aboutPreviewHeadline || "A Legacy of Compassion";
+  
+  const programsTitle = content.homePage?.programsTitle || "Our Core Programs";
+  const programsSubtitle = content.homePage?.programsSubtitle || "Holistic interventions designed to break the cycle of poverty.";
+
   if (!content || !content.hero) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-transparent">
@@ -190,9 +203,9 @@ export const Home: React.FC = () => {
             transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.6 }
           } as any)}
         >
-          <AnimatedCounter value={150} suffix="+" label="Children Educated" />
-          <AnimatedCounter value={500} suffix="+" label="Meals Served Weekly" />
-          <AnimatedCounter value={30} suffix="" label="Families Empowered" />
+          {stats.map((stat) => (
+             <AnimatedCounter key={stat.id} value={stat.value} suffix={stat.suffix} label={stat.label} />
+          ))}
         </motion.div>
       </section>
 
@@ -213,9 +226,12 @@ export const Home: React.FC = () => {
               } as any)}
             >
               <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-3">
-                <span className="w-8 h-[1px] bg-teal-600"></span> Our Story
+                <span className="w-8 h-[1px] bg-teal-600"></span> {aboutPreviewTitle}
               </h4>
-              <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">A Legacy of <br/><span className="text-teal-600 italic">Compassion</span></h2>
+              <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">
+                {aboutPreviewHeadline.split(' ').slice(0, -1).join(' ')} <br/>
+                <span className="text-teal-600 italic">{aboutPreviewHeadline.split(' ').pop()}</span>
+              </h2>
               <p className="text-slate-600 text-xl leading-relaxed mb-10 font-light">
                 {content.about.founderStory.substring(0, 300)}...
               </p>
@@ -273,8 +289,8 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h4 className="text-teal-600 font-bold uppercase tracking-widest text-sm mb-4">What We Do</h4>
-            <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-6 tracking-tight">Our Core Programs</h2>
-            <p className="text-slate-500 max-w-2xl mx-auto text-xl font-light">Holistic interventions designed to break the cycle of poverty.</p>
+            <h2 className="font-serif text-5xl sm:text-6xl font-bold text-slate-900 mb-6 tracking-tight">{programsTitle}</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-xl font-light">{programsSubtitle}</p>
           </div>
 
           <motion.div 

@@ -1,11 +1,12 @@
 import React from 'react';
 import * as ReactRouterDOM from 'react-router-dom';
-import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock, ArrowRight, MessageCircle } from 'lucide-react';
+import { Facebook, Instagram, Mail, Phone, MapPin, Heart, Lock, ArrowRight, MessageCircle, Twitter, Linkedin } from 'lucide-react';
 import { useContent } from '../contexts/ContentContext';
 
 export const Footer: React.FC = () => {
   const { content } = useContent();
   const year = new Date().getFullYear();
+  const socials = content.contact.socials;
 
   return (
     <footer className="bg-slate-950 text-slate-400 border-t border-slate-900 font-sans">
@@ -22,8 +23,21 @@ export const Footer: React.FC = () => {
               {content.about.mission}
             </p>
             <div className="flex space-x-4 pt-2">
-              <a href="https://www.facebook.com/profile.php?id=61585230359217" target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Facebook size={18} /></a>
-              <a href="#" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Instagram size={18} /></a>
+              {socials?.facebook && (
+                <a href={socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Facebook size={18} /></a>
+              )}
+              {socials?.instagram && (
+                <a href={socials.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Instagram size={18} /></a>
+              )}
+              {socials?.twitter && (
+                 <a href={socials.twitter} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Twitter size={18} /></a>
+              )}
+              {socials?.linkedin && (
+                 <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 bg-slate-900 rounded-full hover:bg-teal-600 hover:text-white transition-all"><Linkedin size={18} /></a>
+              )}
+              {(!socials?.facebook && !socials?.instagram && !socials?.twitter && !socials?.linkedin) && (
+                  <span className="text-xs text-slate-600 italic">No social links configured</span>
+              )}
             </div>
           </div>
 

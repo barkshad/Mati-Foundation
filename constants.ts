@@ -22,6 +22,17 @@ export const DEFAULT_CONTENT: SiteContent = {
     subheadline: "Mati Foundation is an independent, community-driven humanitarian organization in Kilifi, Kenya, dedicated to providing dignity, education, and opportunity to vulnerable children.",
     heroImage: "https://picsum.photos/1920/1080",
   },
+  homePage: {
+    stats: [
+      { id: "st1", value: 150, suffix: "+", label: "Children Educated" },
+      { id: "st2", value: 500, suffix: "+", label: "Meals Served Weekly" },
+      { id: "st3", value: 30, suffix: "", label: "Families Empowered" }
+    ],
+    aboutPreviewTitle: "Our Story",
+    aboutPreviewHeadline: "A Legacy of Compassion",
+    programsTitle: "Our Core Programs",
+    programsSubtitle: "Holistic interventions designed to break the cycle of poverty."
+  },
   about: {
     mission: "To uplift vulnerable children and communities by providing access to education, basic needs, and opportunities that promote dignity, resilience, and long-term transformation.",
     vision: "A future where every child has access to education, care, and opportunity regardless of background or circumstance.",
@@ -44,6 +55,12 @@ export const DEFAULT_CONTENT: SiteContent = {
     whatsapp: "+254 712 146179",
     bankDetails: "Diamond Trust Bank, Acc: 0200471001 (Matilda John Kashindo), Branch: Kilifi",
     mpesa: "Paybill: 123456, Acc: Donation",
+    socials: {
+      facebook: "https://facebook.com",
+      instagram: "https://instagram.com",
+      twitter: "",
+      linkedin: ""
+    }
   },
   programs: [
     {

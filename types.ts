@@ -29,6 +29,13 @@ export interface ChildProfile {
   needsSponsorship: boolean;
 }
 
+export interface SocialLinks {
+  facebook: string;
+  instagram: string;
+  twitter: string;
+  linkedin: string;
+}
+
 export interface ContactInfo {
   address: string;
   email: string;
@@ -36,6 +43,7 @@ export interface ContactInfo {
   whatsapp: string;
   bankDetails: string;
   mpesa: string;
+  socials?: SocialLinks;
 }
 
 export interface MediaItem {
@@ -55,6 +63,21 @@ export interface GetInvolvedContent {
     volunteerText: string;
 }
 
+export interface StatItem {
+  id: string;
+  value: number;
+  label: string;
+  suffix: string;
+}
+
+export interface HomePageContent {
+  stats: StatItem[];
+  aboutPreviewTitle: string;
+  aboutPreviewHeadline: string;
+  programsTitle: string;
+  programsSubtitle: string;
+}
+
 export interface SiteTheme {
     primaryColor: string; // Hex code
 }
@@ -66,6 +89,7 @@ export interface SiteContent {
     subheadline: string;
     heroImage: string;
   };
+  homePage?: HomePageContent;
   about: {
     mission: string;
     vision: string;

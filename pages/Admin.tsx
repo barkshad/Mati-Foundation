@@ -517,6 +517,14 @@ export const Admin: React.FC = () => {
                     </div>
 
                     <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h2 className="text-xl font-bold text-slate-800 mb-6">Founder's Image</h2>
+                        <div className="p-4 bg-slate-50 rounded-xl border">
+                            <ImageUploader onUploadComplete={data => setAboutData({...aboutData, founderImage: data.url})} label="Upload Portrait" />
+                            {aboutData.founderImage && <img src={aboutData.founderImage} className="w-48 h-48 object-cover rounded-lg mt-2 shadow-sm" />}
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-100">
                         <h2 className="text-xl font-bold text-slate-800 mb-6">Home Page Preview Images</h2>
                         <p className="text-sm text-slate-500 mb-4">These images appear in the "Our Story" section on the Home Page.</p>
                         <div className="grid md:grid-cols-2 gap-6">

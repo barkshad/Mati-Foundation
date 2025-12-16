@@ -37,6 +37,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     mission: "To uplift vulnerable children and communities by providing access to education, basic needs, and opportunities that promote dignity, resilience, and long-term transformation.",
     vision: "A future where every child has access to education, care, and opportunity regardless of background or circumstance.",
     founderStory: "Mati Foundation was founded by Matilda Kashindo out of a deep commitment to protecting children’s dignity and expanding access to education and care within underserved communities. Through years of grassroots involvement, she recognized that meaningful and lasting change begins with education, stable care, and community participation.",
+    founderImage: "https://picsum.photos/800/800?grayscale",
     values: ["Compassion", "Integrity", "Transparency", "Community", "Sustainability"],
     homePreviewImage1: "https://picsum.photos/400/500?random=20",
     homePreviewImage2: "https://picsum.photos/400/500?random=21",

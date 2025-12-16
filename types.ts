@@ -94,6 +94,7 @@ export interface SiteContent {
     mission: string;
     vision: string;
     founderStory: string;
+    founderImage?: string;
     values: string[];
     homePreviewImage1?: string;
     homePreviewImage2?: string;

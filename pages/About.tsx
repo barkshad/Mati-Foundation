@@ -43,7 +43,11 @@ export const About: React.FC = () => {
         {/* Founder Story */}
         <div className="flex flex-col lg:flex-row gap-12 items-center mb-24">
             <div className="lg:w-1/2">
-                <img src="https://picsum.photos/800/800?grayscale" alt="Matilda Kashindo" className="rounded-2xl shadow-2xl" />
+                <img 
+                    src={content.about.founderImage || "https://picsum.photos/800/800?grayscale"} 
+                    alt="Matilda Kashindo" 
+                    className="rounded-2xl shadow-2xl w-full object-cover aspect-square" 
+                />
             </div>
             <div className="lg:w-1/2">
                 <h2 className="font-serif text-4xl font-bold text-slate-900 mb-6">The Founder's Story</h2>

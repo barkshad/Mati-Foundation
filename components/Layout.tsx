@@ -46,6 +46,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isAdmin = location.pathname.startsWith('/admin');
   const { loading, content } = useContent();
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   // Apply theme variables to root
   useEffect(() => {
     if (content.theme && content.theme.primaryColor) {
